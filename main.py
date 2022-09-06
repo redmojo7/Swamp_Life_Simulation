@@ -40,9 +40,8 @@ cell = np.zeros((ROW_MAX, COL_MAX), dtype=int)
 screen.fill(COLOR_GRID)
 # Drawing :This function is used to update the content of the entire display surface of the screen.
 pygame.display.flip()
-#pygame.display.update()
 
-# init cell
+# Initialing Color
 for i in range(10):
     # index from 0 to (max-1)
     randX = random.randint(0, ROW_MAX-1)
@@ -86,7 +85,7 @@ def update_cell():
             #    color = COLOR_DIE_NEXT
 
             # drawing object on screen which is rectangle here
-            pygame.draw.rect(screen, color, (col, row, WIDTH, HEIGHT))
+            pygame.draw.rect(screen, color, (col_moved, row_moved, WIDTH, HEIGHT))
     return next_grid
 
 # Indicates pygame is running
