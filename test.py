@@ -106,12 +106,13 @@ food_positions = []
 
 # reproduce food with max number
 def reproduce_food(number):
-    # product_food - 10% chance of reproducing  in cell
-
     food_width = 5
     food_height = 5
     # if there is no food left
     if len(food_positions) <= 0:
+        # product_food - 10% chance of reproducing  in cell
+        if random.random() > 0.9:
+            return
         for index in range(number):  # range(random.randint(1, number)):
             reproduce = True
             try_times = 5

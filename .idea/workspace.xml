@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a80f6687-70e5-4d93-96a1-8d94ba02ed85" name="Changes" comment="Add map for the screen">
+    <list default="true" id="a80f6687-70e5-4d93-96a1-8d94ba02ed85" name="Changes" comment="Replace pos with (x,y)">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/organism_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/organism_test.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -165,8 +166,8 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.test" />
-        <item itemvalue="Python.swamp (1)" />
         <item itemvalue="Python.organism_test" />
+        <item itemvalue="Python.swamp (1)" />
         <item itemvalue="Python.map" />
         <item itemvalue="Python.swamp" />
       </list>
@@ -195,7 +196,14 @@
       <option name="project" value="LOCAL" />
       <updated>1662545543170</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Replace pos with (x,y)">
+      <created>1662547409238</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1662547409238</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -212,7 +220,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Add Duck and Newt; Produce food" />
     <MESSAGE value="Add map for the screen" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add map for the screen" />
+    <MESSAGE value="Replace pos with (x,y)" />
+    <option name="LAST_COMMIT_MESSAGE" value="Replace pos with (x,y)" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -224,8 +233,8 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/swamp.py</url>
-          <line>35</line>
-          <option name="timeStamp" value="7" />
+          <line>65</line>
+          <option name="timeStamp" value="8" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
