@@ -70,8 +70,8 @@ for i in range(10):
 def update_cell():
     next_gen = np.zeros((HEIGHT, WIDTH), dtype=int)
     print("\n ### next generation ###")
-
-    for duck in ducks:
+    filtered_duck = filter(lambda d: d.state != d.DEATH, ducks)
+    for duck in list(filtered_duck):
         row = duck.x
         col = duck.y
         # move and board check
@@ -84,7 +84,8 @@ def update_cell():
         print(f"duck moved from position ({row}, {col}) to position: ({row_moved}, {col_moved} with size {duck.get_size()}) ")
         pygame.draw.rect(screen, COLOR_DUCK, (col_moved, row_moved, width, height))
 
-    for newt in newts:
+    filtered_newt = filter(lambda n: n.state != n.DEATH, newts)
+    for newt in list(filtered_newt):
         color = COLOR_NEWT
         row = newt.x
         col = newt.y
@@ -118,9 +119,9 @@ def reproduce_food(number):
             try_times = 5
             while reproduce or try_times == 0:
                 try_times -= 1
-                x = random.randint(0, HEIGHT - 10)
+                x = random.randint(0, HEIGHT - 10)  # - 10: not close to the board
                 y = random.randint(0, WIDTH - 10)
-                # Moore's neighbourhoods with 5 points, there are some livings
+                # Moore's neighbourhoods with 5 points, there is no any creatures
                 if np.sum(current_gen[x - 5:x + 6, y - 5:y + 6]) == 0:
                     food_positions.append([x, y])
                     reproduce = False
@@ -131,7 +132,6 @@ def reproduce_food(number):
     # show food left on the screen
     for row, col in food_positions:
         pygame.draw.rect(screen, COLOR_FOOD, (col, row, food_width, food_height))
-
         print(f"Food will be show at ({row}, {col})")
 
 
