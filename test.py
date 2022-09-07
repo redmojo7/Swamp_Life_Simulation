@@ -16,8 +16,8 @@ import random
 from map import Map
 from swamp import Duck, Newt
 
-ROW_MAX = 400
-COL_MAX = 400
+HEIGHT = 400
+WIDTH = 400
 POP = 20
 STEPS = 10
 
@@ -29,10 +29,8 @@ COLOR_FOOD = (255, 99, 71)  # Tomato
 
 # Initializing Pygame
 pygame.init()
-# Initializing surface, create the display screen object
-(width, height) = (COL_MAX, ROW_MAX)
-(height, width) = (ROW_MAX, COL_MAX)
-screen = pygame.display.set_mode((width, height))
+# Initializing surface, create the display screen object  pygame.display.set_mode((width, height))
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
 # set the pygame window name
 pygame.display.set_caption("Swamp Life Simulation")
 # Initialing Color
@@ -41,18 +39,18 @@ screen.fill(COLOR_GRID)
 pygame.display.flip()
 pygame.display.update()
 
-# use current_gen as grid
-current_gen = np.zeros((height, width), dtype=int)
+# use current_gen as grid   np.zeros(row, col)
+current_gen = np.zeros((HEIGHT, WIDTH), dtype=int)
 
 
-# return a random position
+# return a random position [x,y]
 def random_position():
     # keep away from the boarder, at least 10 points
-    return [random.randint(0, ROW_MAX - 10), random.randint(0, COL_MAX - 10)]
+    return [random.randint(0, HEIGHT - 10), random.randint(0, WIDTH - 10)]
 
 
 # create Map Object
-myMap = Map(width, height)
+myMap = Map(WIDTH, HEIGHT)
 
 ducks = []
 newts = []
@@ -68,61 +66,33 @@ for i in range(10):
     print(newts[i])
 '''
 
-SIZE = 10
-# dimensions of the object
-WIDTH = SIZE - 1
-HEIGHT = SIZE - 1
-
-
-# velocity / speed of movement
-# VELOCITY = 10
-
-
-def board_check(living):
-    row_moved = living.pos[0]
-    col_moved = living.pos[1]
-    if row_moved < 0:
-        row_moved = 0
-    if col_moved < 0:
-        col_moved = 0
-    # "ROW_MAX - living.get_size()" --- prevent living cross border at the first time
-    if row_moved > ROW_MAX - living.get_size():
-        row_moved = ROW_MAX - living.get_size()
-    if col_moved >= COL_MAX - living.get_size():
-        col_moved = COL_MAX - living.get_size()
-    living.pos = [row_moved, col_moved]
-
 
 def update_cell():
-    next_gen = np.zeros((current_gen.shape[0], current_gen.shape[1]), dtype=int)
-    # color = COLOR_GRID
+    next_gen = np.zeros((HEIGHT, WIDTH), dtype=int)
     print("\n ### next generation ###")
 
     for duck in ducks:
-        color = COLOR_DUCK
-        row = duck.pos[0]
-        col = duck.pos[1]
+        row = duck.x
+        col = duck.y
         # move and board check
         duck.step_change()
-        # board_check(duck)
 
-        row_moved = duck.pos[0]
-        col_moved = duck.pos[1]
+        row_moved = duck.x
+        col_moved = duck.y
         width = duck.get_size() - 1
         height = duck.get_size() - 1
         print(f"duck moved from position ({row}, {col}) to position: ({row_moved}, {col_moved} with size {duck.get_size()}) ")
-        pygame.draw.rect(screen, color, (col_moved, row_moved, width, height))
+        pygame.draw.rect(screen, COLOR_DUCK, (col_moved, row_moved, width, height))
 
     for newt in newts:
         color = COLOR_NEWT
-        row = newt.pos[0]
-        col = newt.pos[1]
+        row = newt.x
+        col = newt.y
         # move aRnd board check
         newt.step_change()
-        # board_check(newt)
 
-        row_moved = newt.pos[0]
-        col_moved = newt.pos[1]
+        row_moved = newt.x
+        col_moved = newt.y
         width = newt.get_size() - 1
         height = newt.get_size() - 1
         print(
@@ -147,8 +117,8 @@ def reproduce_food(number):
             try_times = 5
             while reproduce or try_times == 0:
                 try_times -= 1
-                x = random.randint(0, ROW_MAX - 10)
-                y = random.randint(0, COL_MAX - 10)
+                x = random.randint(0, HEIGHT - 10)
+                y = random.randint(0, WIDTH - 10)
                 # Moore's neighbourhoods with 5 points, there are some livings
                 if np.sum(current_gen[x - 5:x + 6, y - 5:y + 6]) == 0:
                     food_positions.append([x, y])
