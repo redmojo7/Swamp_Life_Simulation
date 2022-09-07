@@ -12,6 +12,8 @@
 import numpy as np
 import pygame
 import random
+
+from map import Map
 from swamp import Duck, Newt
 
 ROW_MAX = 400
@@ -27,20 +29,20 @@ COLOR_FOOD = (255, 99, 71)  # Tomato
 
 # Initializing Pygame
 pygame.init()
-# Initializing surface
-# create the display screen object
-screen = pygame.display.set_mode((COL_MAX, ROW_MAX))
-
+# Initializing surface, create the display screen object
+(width, height) = (COL_MAX, ROW_MAX)
+(height, width) = (ROW_MAX, COL_MAX)
+screen = pygame.display.set_mode((width, height))
 # set the pygame window name
 pygame.display.set_caption("Swamp Life Simulation")
-
-running = True
-current_gen = np.zeros((ROW_MAX, COL_MAX), dtype=int)
 # Initialing Color
 screen.fill(COLOR_GRID)
 # Drawing :This function is used to update the content of the entire display surface of the screen.
 pygame.display.flip()
 pygame.display.update()
+
+# use current_gen as grid
+current_gen = np.zeros((height, width), dtype=int)
 
 
 # return a random position
@@ -49,17 +51,22 @@ def random_position():
     return [random.randint(0, ROW_MAX - 10), random.randint(0, COL_MAX - 10)]
 
 
+# create Map Object
+myMap = Map(width, height)
+
 ducks = []
 newts = []
 # Initialing duck population
 for i in range(5):
-    ducks.append(Duck(random_position()))
+    ducks.append(Duck(random_position(), myMap))
     print(ducks[i])
 
 # Initialing newt population
+'''
 for i in range(10):
-    newts.append(Newt(random_position()))
+    newts.append(Newt(random_position(), myMap))
     print(newts[i])
+'''
 
 SIZE = 10
 # dimensions of the object
@@ -88,7 +95,7 @@ def board_check(living):
 
 def update_cell():
     next_gen = np.zeros((current_gen.shape[0], current_gen.shape[1]), dtype=int)
-    #color = COLOR_GRID
+    # color = COLOR_GRID
     print("\n ### next generation ###")
 
     for duck in ducks:
@@ -97,14 +104,13 @@ def update_cell():
         col = duck.pos[1]
         # move and board check
         duck.step_change()
-        board_check(duck)
+        # board_check(duck)
 
         row_moved = duck.pos[0]
         col_moved = duck.pos[1]
         width = duck.get_size() - 1
         height = duck.get_size() - 1
-        print(
-            f"duck moved from position ({row}, {col}) to position: ({row_moved}, {col_moved} with size {duck.get_size()}) ")
+        print(f"duck moved from position ({row}, {col}) to position: ({row_moved}, {col_moved} with size {duck.get_size()}) ")
         pygame.draw.rect(screen, color, (col_moved, row_moved, width, height))
 
     for newt in newts:
@@ -113,7 +119,7 @@ def update_cell():
         col = newt.pos[1]
         # move aRnd board check
         newt.step_change()
-        board_check(newt)
+        # board_check(newt)
 
         row_moved = newt.pos[0]
         col_moved = newt.pos[1]
@@ -149,9 +155,12 @@ def reproduce_food(number):
                     reproduce = False
                     print(f"Food was produced at ({x}, {y})")
 
+    # add foods to map
+    myMap.add_food(food_positions)
     # show food left on the screen
     for row, col in food_positions:
         pygame.draw.rect(screen, COLOR_FOOD, (col, row, food_width, food_height))
+
         print(f"Food will be show at ({row}, {col})")
 
 
