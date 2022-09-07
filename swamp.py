@@ -85,12 +85,14 @@ class Creature(object):  #
 
 class Duck(Creature):
     TIME_2_HATCH = 4
+    TIME_2_LAY_EGG = 10
     TIME_2_AGED = 15
     TIME_2_DEATH = 20
     EGG = "egg"
     ADULT = "adult"
 
     def __init__(self, pos, map):
+        self.egg = None
         self.state = self.EGG
         self.velocity = 10  # velocity / speed of movement
         self.vision = 40  # can see food from max 40 points away
@@ -103,9 +105,11 @@ class Duck(Creature):
         self.age += 1
         if self.state == self.EGG and self.age >= self.TIME_2_HATCH:    # ready to HATCH
             self.state = self.ADULT
-        else:
+        elif self.state == self.ADULT:
             if self.velocity == 10 and self.age >= self.TIME_2_AGED:    # old
                 self.velocity = 5
+            if self.age >= self.TIME_2_LAY_EGG and random.random() < 0.03:   # 10% chance to lay eggs
+                self.egg = [self.x, self.y]
             if self.age > self.TIME_2_DEATH:    # death
                 self.state = self.DEATH
             else:                               # run if it doesn't die

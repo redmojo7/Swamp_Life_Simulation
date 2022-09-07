@@ -16,8 +16,8 @@ import random
 from map import Map
 from swamp import Duck, Newt
 
-HEIGHT = 400
-WIDTH = 400
+HEIGHT = 600
+WIDTH = 1200
 POP = 20
 STEPS = 10
 
@@ -65,13 +65,21 @@ for i in range(10):
     newts.append(Newt(random_position(), myMap))
     print(newts[i])
 '''
+duck_img = pygame.image.load('duck.png')
 
 
 def update_cell():
     next_gen = np.zeros((HEIGHT, WIDTH), dtype=int)
     print("\n ### next generation ###")
-    filtered_duck = filter(lambda d: d.state != d.DEATH, ducks)
-    for duck in list(filtered_duck):
+    # add new egg to ducks
+    mama_ducks = list(filter(lambda d: d.egg is not None, ducks))
+    for duck in mama_ducks:
+        ducks.append(Duck(duck.egg, myMap))
+        duck.egg = None   # remove from mama
+
+    # remove ducks who died
+    alive_duck = filter(lambda d: d.state != d.DEATH, ducks)
+    for duck in list(alive_duck):
         row = duck.x
         col = duck.y
         # move and board check
@@ -82,10 +90,13 @@ def update_cell():
         width = duck.get_size() - 1
         height = duck.get_size() - 1
         print(f"duck moved from position ({row}, {col}) to position: ({row_moved}, {col_moved} with size {duck.get_size()}) ")
-        pygame.draw.rect(screen, COLOR_DUCK, (col_moved, row_moved, width, height))
+        #pygame.draw.rect(screen, COLOR_DUCK, (col_moved, row_moved, width, height))
+        scaled_duck_img = pygame.transform.scale(duck_img, (duck.get_size(), duck.get_size()))
+        screen.blit(scaled_duck_img, (col_moved, row_moved))
 
-    filtered_newt = filter(lambda n: n.state != n.DEATH, newts)
-    for newt in list(filtered_newt):
+    # remove newts who died
+    alive_newt = filter(lambda n: n.state != n.DEATH, newts)
+    for newt in list(alive_newt):
         color = COLOR_NEWT
         row = newt.x
         col = newt.y
@@ -96,9 +107,9 @@ def update_cell():
         col_moved = newt.y
         width = newt.get_size() - 1
         height = newt.get_size() - 1
-        print(
-            f"newt moved from position ({row}, {col}) to position: ({row_moved}, {col_moved} with size {newt.get_size()}) ")
+        print(f"newt moved from position ({row}, {col}) to position: ({row_moved}, {col_moved} with size {newt.get_size()}) ")
         pygame.draw.rect(screen, color, (col_moved, row_moved, width, height))
+
     return next_gen
 
 
