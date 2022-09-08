@@ -24,16 +24,24 @@ class Creature(object):  #
 
     # target is array [x,y]
     def move_to_target(self, target):
-        # move for x
         print(f"Move to target ({target[0]},{target[1]})")
-        if abs(self.x - target[0]) > self.velocity:  # farther than a velocity
-            if (self.x - target[0]) > 0:
-                x_moved = self.x - self.velocity
-            else:
-                x_moved = self.x + self.velocity
+        if self.x == target[0]:
+            # move on y
+            print("move on y")
+            self.move_to_target_y(target)
+        elif self.y == target[1]:
+            # move on y
+            print("move on x")
+            self.move_to_target_x(target)
         else:
-            x_moved = target[0]
-        # move for y
+            if random.random() > 0.5:
+                self.move_to_target_x(target)
+            else:
+                self.move_to_target_x(target)
+
+            print("move on x or y")
+
+    def move_to_target_y(self, target):
         if abs(self.y - target[1]) > self.velocity:  # farther than a velocity
             if (self.y - target[1]) > 0:
                 y_moved = self.y - self.velocity
@@ -41,9 +49,19 @@ class Creature(object):  #
                 y_moved = self.y + self.velocity
         else:
             y_moved = target[1]
-        # change position
-        self.x = x_moved
+        # change position for y
         self.y = y_moved
+
+    def move_to_target_x(self, target):
+        if abs(self.x - target[0]) > self.velocity:  # farther than a velocity
+            if (self.x - target[0]) > 0:
+                x_moved = self.x - self.velocity
+            else:
+                x_moved = self.x + self.velocity
+        else:
+            x_moved = target[0]
+        # change position for x
+        self.x = x_moved
 
     # random_run
     def random_run(self):
@@ -103,18 +121,17 @@ class Duck(Creature):
 
     def step_change(self):
         self.age += 1
-        if self.state == self.EGG and self.age >= self.TIME_2_HATCH:    # ready to HATCH
+        if self.state == self.EGG and self.age >= self.TIME_2_HATCH:  # ready to HATCH
             self.state = self.ADULT
         elif self.state == self.ADULT:
-            if self.velocity == 10 and self.age >= self.TIME_2_AGED:    # old
+            if self.velocity == 10 and self.age >= self.TIME_2_AGED:  # old
                 self.velocity = 5
-            if self.age >= self.TIME_2_LAY_EGG and random.random() < 0.03:   # 10% chance to lay eggs
+            if self.age >= self.TIME_2_LAY_EGG and random.random() < 0.03:  # 10% chance to lay eggs
                 self.egg = [self.x, self.y]
-            if self.age > self.TIME_2_DEATH:    # death
+            if self.age > self.TIME_2_DEATH:  # death
                 self.state = self.DEATH
-            else:                               # run if it doesn't die
+            else:  # run if it doesn't die
                 super().step_change()  # Call parent step_change
-
 
     def get_size(self):
         if self.state == "egg":
@@ -139,7 +156,7 @@ class Newt(Creature):
 
     def step_change(self):
         self.age += 1
-        if self.age > self.TIME_2_DEATH:    # death
+        if self.age > self.TIME_2_DEATH:  # death
             self.state = self.DEATH
         super().step_change()
 
