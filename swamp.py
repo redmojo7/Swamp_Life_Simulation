@@ -17,6 +17,8 @@ class Creature(object):  #
     DEATH = "death"
 
     def __init__(self, pos, map):
+        self.velocity = None
+        self.vision = None
         self.x = pos[0]
         self.y = pos[1]
         self.age = 0
@@ -81,40 +83,39 @@ class Creature(object):  #
 
     def step_change(self):
         # before moving, check if there are some food around ** points (it depends on vision)
-        food_cells = np.zeros((self.map.height, self.map.width), dtype=int)
-        # put all foods into cells
-        for x, y in self.map.foods:
-            food_cells[x, y] = 1
-        if self.map.foods:
+        if self.map.foods and self.searched_food():
             # to find the nearest one by calculating the Euclidean distance
             # https://github.com/Rabbid76/PyGameExamplesAndAnswers/blob/master/documentation/pygame/pygame_math_vector_and_reflection.md
             food = min([f for f in self.map.foods], key=lambda f: pow(f[0] - self.x, 2) + pow(f[1] - self.y, 2))
             # move forward to food
-            # if np.sum(food_cells[self.x - 5:self.x + 6, self.y - 5:self.y + 6]) == 0:
             print(f"Food was found! @ ({food[0]},{food[1]})")
             if food[0] == self.x and food[1] == self.y:
-                print(f"Eating food...@ {food[0]},{food[1]}")
-                self.map.foods.remove(food)
-            self.move_to_target(food)
+                self.map.eat_food(food)
+                self.age -= 3
+            else:
+                self.move_to_target(food)
         else:
             # there is no food, then random running
             self.random_run()
 
+    # if food was found, return true
+    def searched_food(self):
+        return np.sum(self.map.food_cells[self.x - self.vision:self.x + self.vision+1, self.y - self.vision:self.y + self.vision+1]) != 0
 
 class Duck(Creature):
     TIME_2_HATCH = 4
     TIME_2_LAY_EGG = 10
     TIME_2_AGED = 15
-    TIME_2_DEATH = 20
+    TIME_2_DEATH = 50
     EGG = "egg"
     ADULT = "adult"
 
     def __init__(self, pos, map):
+        super().__init__(pos, map)  # Call parent __init__
         self.egg = None
         self.state = self.EGG
         self.velocity = 10  # velocity / speed of movement
-        self.vision = 40  # can see food from max 40 points away
-        super().__init__(pos, map)  # Call parent __init__
+        self.vision = 50  # can see food from max 40 points away
 
     def __str__(self):
         return f"{self.state} Duck aged {self.age} @ ({self.x},{self.y})"
@@ -145,11 +146,11 @@ class Newt(Creature):
     TIME_2_DEATH = 20
 
     def __init__(self, pos, map):
+        super().__init__(pos, map)  # Call parent __init__
         self.velocity = 5
         self.size = 10
         self.state = "Newt"
         self.vision = 30  # can see food from max 40 points away
-        super().__init__(pos, map)  # Call parent __init__
 
     def __str__(self):
         return f"Newt aged {self.age} @ ({self.x},{self.y})"

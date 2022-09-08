@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a80f6687-70e5-4d93-96a1-8d94ba02ed85" name="Changes" comment="Use png to replace square for Duck">
+    <list default="true" id="a80f6687-70e5-4d93-96a1-8d94ba02ed85" name="Changes" comment="Moving with Manhattan distance">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/duck.png" beforeDir="false" afterPath="$PROJECT_DIR$/duck.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/map.py" beforeDir="false" afterPath="$PROJECT_DIR$/map.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/swamp.py" beforeDir="false" afterPath="$PROJECT_DIR$/swamp.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
     </list>
@@ -230,7 +230,14 @@
       <option name="project" value="LOCAL" />
       <updated>1662557066348</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Moving with Manhattan distance">
+      <created>1662646972293</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1662646972294</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -251,7 +258,8 @@
     <MESSAGE value="Add feature: chasing food" />
     <MESSAGE value="Add Creature in swamp.py" />
     <MESSAGE value="Use png to replace square for Duck" />
-    <option name="LAST_COMMIT_MESSAGE" value="Use png to replace square for Duck" />
+    <MESSAGE value="Moving with Manhattan distance" />
+    <option name="LAST_COMMIT_MESSAGE" value="Moving with Manhattan distance" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -260,16 +268,6 @@
           <url>file://$PROJECT_DIR$/main.py</url>
           <line>8</line>
           <option name="timeStamp" value="1" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/swamp.py</url>
-          <line>85</line>
-          <option name="timeStamp" value="8" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/swamp.py</url>
-          <line>29</line>
-          <option name="timeStamp" value="10" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

@@ -180,7 +180,7 @@ while running:
     screen.fill(COLOR_GRID)
     current_gen = update_cell()
     #
-    reproduce_food(5)
+    reproduce_food(25)
 
     pygame.display.update()
 
