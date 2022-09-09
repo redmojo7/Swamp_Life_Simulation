@@ -9,14 +9,22 @@
 # no
 #
 import numpy as np
+from swamp import Duck, Newt
 
 
 class Map:
-    livings = []
+    # list of Duck, Newt, and Shrimps
+    ducks_list = []
+    newts_list = []
+    shrimps_list = []
+
+    # foods, etc. is a list of each food position, like [[1,2],[1,3]]
     foods = []
-    food_cells = []
     terrain = []
-    terrain_cells = []
+
+    # foods, etc. is a numpy array, value 1 means that entity exist here
+    food_cells = None
+    terrain_cells = None
 
     def __init__(self, width=500, height=500):
         # by default, map are 500*500
@@ -44,6 +52,52 @@ class Map:
         # put all altitude into cells
         for x, y in positions:
             self.terrain_cells[x, y] = 1
+
+    def add_creatures(self, creatures):
+        for c in creatures:
+            if isinstance(c, Duck):
+                self.ducks_list.append(c)
+            elif isinstance(c, Newt):
+                self.newts_list.append(c)
+
+    def remove_newt(self, position):
+        x = position[0]
+        y = position[1]
+        self.newts_list = list(filter(lambda n: n.x != x and n.y != y, self.newts_list))
+
+    def get_ducks_pos(self):
+        ducks = []
+        [ducks.append([duck.x, duck.y]) for duck in self.ducks_list]
+        return ducks
+
+    def get_newts_pos(self):
+        newts = []
+        [newts.append([newt.x, newt.y]) for newt in self.newts_list]
+        return newts
+
+    def get_shrimps_pos(self):
+        shrimps = []
+        [shrimps.append([shrimp.x, shrimp.y]) for shrimp in self.shrimps_list]
+        return shrimps
+
+    def get_ducks_cells(self):
+        ducks_cells = np.zeros((self.height, self.width), dtype=int)
+        for duck in self.ducks_list:
+            ducks_cells[duck.x, duck.y] = 1
+        return ducks_cells
+
+    def get_newts_cells(self):
+        newts_cells = np.zeros((self.height, self.width), dtype=int)
+        for newt in self.newts_list:
+            newts_cells[newt.x, newt.y] = 1
+        return newts_cells
+
+    def get_shrimps_cells(self):
+        shrimps_cells = np.zeros((self.height, self.width), dtype=int)
+        for shrimp in self.shrimps_list:
+            shrimps_cells[shrimp.x, shrimp.y] = 1
+        return shrimps_cells
+
 
 '''
     def add_livings(self, livings):

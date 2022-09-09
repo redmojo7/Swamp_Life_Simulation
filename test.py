@@ -27,7 +27,8 @@ COLOR_NEWT = (0, 255, 255)  # Cyan
 COLOR_DUCK = (128, 128, 128)  # Gray
 COLOR_SHRIMP = (220, 20, 60)  # Crimson
 COLOR_FOOD = (255, 99, 71)  # Tomato
-COLOR_TURQUOISE = (64, 224, 208)# Turquoise
+COLOR_TURQUOISE = (64, 224, 208)  # Turquoise
+COLOR_DARK_BLUE = (0, 60, 95)  #
 
 # Initializing Pygame
 pygame.init()
@@ -36,7 +37,8 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 # set the pygame window name
 pygame.display.set_caption("Swamp Life Simulation")
 # Initialing Color
-screen.fill(COLOR_GRID)
+# screen.fill(COLOR_GRID)
+screen.fill(COLOR_DARK_BLUE)
 # Drawing :This function is used to update the content of the entire display surface of the screen.
 pygame.display.flip()
 pygame.display.update()
@@ -71,45 +73,43 @@ for i in range(5):
 
 # Initialing newt population
 
-for i in range(10):
+for i in range(40):
     newts.append(Newt(random_position(), myMap))
     print(newts[i])
+
+myMap.add_creatures(ducks)
+myMap.add_creatures(newts)
 
 duck_img = pygame.image.load('png/duck2.png')
 duck_egg_img = pygame.image.load('png/duck_egg.png')
 newt_img = pygame.image.load('png/newt.png')
 
+
 def update_cell():
     next_gen = np.zeros((HEIGHT, WIDTH), dtype=int)
     print("\n ### next generation ###")
     # add new egg to ducks
-    mama_ducks = list(filter(lambda d: d.egg is not None, ducks))
+    mama_ducks = list(filter(lambda d: d.egg is not None, myMap.ducks_list))
     for duck in mama_ducks:
         ducks.append(Duck(duck.egg, myMap))
         duck.egg = None  # remove from mama
 
     # remove ducks who died
-    alive_duck = list(filter(lambda d: d.state != d.DEATH, ducks))
+    alive_duck = list(filter(lambda d: d.state != d.DEATH, myMap.ducks_list))
     for duck in alive_duck:
         row = duck.x
         col = duck.y
         # if there is any newts stay at same position, then an adult duck will eat one of them, and stay same cell
-        newts_at_same_cell = list(filter(lambda n: n.x == duck.x and n.y == duck.y, newts))
-        if newts_at_same_cell and duck.state == duck.ADULT:
-            newts.remove(newts_at_same_cell[0])
-            duck.age -= 3
-        else:  # move
-            duck.step_change()
+        # newts_at_same_cell = list(filter(lambda n: n.x == duck.x and n.y == duck.y, newts))
+        # move
+        duck.step_change()
         row_moved = duck.x
-        col_moved = row_moved = duck.x
         col_moved = duck.y
-        width = duck.get_size() - 1
-        height = duck.get_size() - 1
-        print(f"duck moved from position ({row}, {col}) to position: ({row_moved}, {col_moved} with size {duck.get_size()}) ")
         # pygame.drawduck.y
         width = duck.get_size() - 1
         height = duck.get_size() - 1
-        print(f"duck moved from position ({row}, {col}) to position: ({row_moved}, {col_moved} with size {duck.get_size()}) ")
+        print(
+            f"duck moved from position ({row}, {col}) to position: ({row_moved}, {col_moved}) with size {duck.get_size()} ")
         # pygame.draw.rect(screen, COLOR_DUCK, (col_moved, row_moved, width, height))
         if duck.state == duck.ADULT:
             img = duck_img
@@ -119,7 +119,9 @@ def update_cell():
         screen.blit(scaled_duck_img, (col_moved, row_moved))
 
     # remove newts who died
-    alive_newt = list(filter(lambda n: n.state != n.DEATH, newts))
+    alive_newt = list(filter(lambda n: n.state != n.DEATH, myMap.newts_list))
+    if not alive_newt:
+        print("aaa")
     for newt in alive_newt:
         color = COLOR_NEWT
         row = newt.x
@@ -132,8 +134,8 @@ def update_cell():
         width = newt.get_size() - 1
         height = newt.get_size() - 1
         print(
-            f"newt moved from position ({row}, {col}) to position: ({row_moved}, {col_moved} with size {newt.get_size()}) ")
-        #pygame.draw.rect(screen, color, (col_moved, row_moved, width, height))
+            f"newt moved from position ({row}, {col}) to position: ({row_moved}, {col_moved}) with size {newt.get_size()} ")
+        # pygame.draw.rect(screen, color, (col_moved, row_moved, width, height))
         scaled_newt_img = pygame.transform.scale(newt_img, (width, height))
         screen.blit(scaled_newt_img, (col_moved, row_moved))
 
@@ -150,7 +152,7 @@ def reproduce_food(number):
     # if there is no food left
     if len(food_positions) <= 0:
         # product_food - 10% chance of reproducing  in cell
-        if random.random() > 0.9:
+        if random.random() > 0.0:
             return
         for index in range(number):  # range(random.randint(1, number)):
             reproduce = True
@@ -184,7 +186,7 @@ def show_terrain():
     pygame.draw.rect(screen, COLOR_TURQUOISE, (terrain_min_x, terrain_min_y, width, height))
 
 
-while running:
+while True:
     # Creates time delay of 10ms
     pygame.time.delay(800)
 
@@ -197,17 +199,21 @@ while running:
         # and program both.
         if event.type == pygame.QUIT:
             # it will make exit the while loop
-            run = False
+            running = False
+        elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+            running = not running
 
     # completely fill the screen with initialing colour
-    screen.fill(COLOR_GRID)
-    current_gen = update_cell()
-    #
-    reproduce_food(25)
-    # show terrain
-    show_terrain()
+    #screen.fill(COLOR_GRID)
+    screen.fill(COLOR_DARK_BLUE)
+    if running:
+        current_gen = update_cell()
+        #
+        reproduce_food(25)
+        # show terrain
+        show_terrain()
 
-    pygame.display.update()
+        pygame.display.update()
 
 # closes the pygame window
 pygame.quit()
