@@ -27,6 +27,7 @@ COLOR_NEWT = (0, 255, 255)  # Cyan
 COLOR_DUCK = (128, 128, 128)  # Gray
 COLOR_SHRIMP = (220, 20, 60)  # Crimson
 COLOR_FOOD = (255, 99, 71)  # Tomato
+COLOR_TURQUOISE = (64, 224, 208)# Turquoise
 
 # Initializing Pygame
 pygame.init()
@@ -52,6 +53,14 @@ def random_position():
 
 # create Map Object
 myMap = Map(WIDTH, HEIGHT)
+# Initialing terrain
+terrain_min_x = 100
+terrain_max_x = 410
+terrain_min_y = 80
+terrain_max_y = 90
+
+terrain = [[row, col] for row in range(terrain_min_x, terrain_max_x) for col in range(terrain_min_y, terrain_max_y)]
+myMap.set_terrain(terrain)
 
 ducks = []
 newts = []
@@ -66,8 +75,9 @@ for i in range(10):
     newts.append(Newt(random_position(), myMap))
     print(newts[i])
 
-duck_img = pygame.image.load('duck.png')
-
+duck_img = pygame.image.load('png/duck2.png')
+duck_egg_img = pygame.image.load('png/duck_egg.png')
+newt_img = pygame.image.load('png/newt.png')
 
 def update_cell():
     next_gen = np.zeros((HEIGHT, WIDTH), dtype=int)
@@ -101,7 +111,11 @@ def update_cell():
         height = duck.get_size() - 1
         print(f"duck moved from position ({row}, {col}) to position: ({row_moved}, {col_moved} with size {duck.get_size()}) ")
         # pygame.draw.rect(screen, COLOR_DUCK, (col_moved, row_moved, width, height))
-        scaled_duck_img = pygame.transform.scale(duck_img, (width, height))
+        if duck.state == duck.ADULT:
+            img = duck_img
+        else:
+            img = duck_egg_img
+        scaled_duck_img = pygame.transform.scale(img, (width, height))
         screen.blit(scaled_duck_img, (col_moved, row_moved))
 
     # remove newts who died
@@ -119,7 +133,9 @@ def update_cell():
         height = newt.get_size() - 1
         print(
             f"newt moved from position ({row}, {col}) to position: ({row_moved}, {col_moved} with size {newt.get_size()}) ")
-        pygame.draw.rect(screen, color, (col_moved, row_moved, width, height))
+        #pygame.draw.rect(screen, color, (col_moved, row_moved, width, height))
+        scaled_newt_img = pygame.transform.scale(newt_img, (width, height))
+        screen.blit(scaled_newt_img, (col_moved, row_moved))
 
     return next_gen
 
@@ -161,6 +177,13 @@ def reproduce_food(number):
 # Indicates pygame is running
 running = True
 
+
+def show_terrain():
+    width = terrain_max_y - terrain_min_y
+    height = terrain_max_x - terrain_min_x
+    pygame.draw.rect(screen, COLOR_TURQUOISE, (terrain_min_x, terrain_min_y, width, height))
+
+
 while running:
     # Creates time delay of 10ms
     pygame.time.delay(800)
@@ -181,6 +204,8 @@ while running:
     current_gen = update_cell()
     #
     reproduce_food(25)
+    # show terrain
+    show_terrain()
 
     pygame.display.update()
 

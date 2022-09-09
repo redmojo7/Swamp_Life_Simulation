@@ -59,3 +59,10 @@ countries = [
 
 populated = filter(lambda c: c[1] > 300000000, countries)
 print(list(populated))
+
+# Initialing terrain
+grid = [[row, col] for row in range(3) for col in range(3)]
+print(grid)
+
+terrain = [[row, col] for row in range(100, 210) for col in range(80, 90)]
+print(terrain)

@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a80f6687-70e5-4d93-96a1-8d94ba02ed85" name="Changes" comment="Moving with Manhattan distance">
+    <list default="true" id="a80f6687-70e5-4d93-96a1-8d94ba02ed85" name="Changes" comment="Add food_cells for Map">
+      <change afterPath="$PROJECT_DIR$/png/duck.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/png/duck2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/png/duck_egg.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/png/newt.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/duck.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/map.py" beforeDir="false" afterPath="$PROJECT_DIR$/map.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/organism_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/organism_test.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/swamp.py" beforeDir="false" afterPath="$PROJECT_DIR$/swamp.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
     </list>
@@ -39,6 +45,7 @@
 }</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/png" />
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
@@ -172,8 +179,8 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.test" />
-        <item itemvalue="Python.swamp (1)" />
         <item itemvalue="Python.organism_test" />
+        <item itemvalue="Python.swamp (1)" />
         <item itemvalue="Python.map" />
         <item itemvalue="Python.swamp" />
       </list>
@@ -237,7 +244,14 @@
       <option name="project" value="LOCAL" />
       <updated>1662646972294</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Add food_cells for Map">
+      <created>1662681381338</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1662681381338</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -259,7 +273,8 @@
     <MESSAGE value="Add Creature in swamp.py" />
     <MESSAGE value="Use png to replace square for Duck" />
     <MESSAGE value="Moving with Manhattan distance" />
-    <option name="LAST_COMMIT_MESSAGE" value="Moving with Manhattan distance" />
+    <MESSAGE value="Add food_cells for Map" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add food_cells for Map" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -136,9 +136,9 @@ class Duck(Creature):
 
     def get_size(self):
         if self.state == "egg":
-            size = 5
+            size = 10
         else:
-            size = 15
+            size = 20
         return size
 
 
