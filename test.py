@@ -16,6 +16,7 @@ import random
 
 from map import Map
 from swamp import Duck, Newt
+from tools import is_inside, is_outside
 
 HEIGHT = 600
 WIDTH = 1200
@@ -29,6 +30,13 @@ COLOR_SHRIMP = (220, 20, 60)  # Crimson
 COLOR_FOOD = (255, 99, 71)  # Tomato
 COLOR_TURQUOISE = (64, 224, 208)  # Turquoise
 COLOR_DARK_BLUE = (0, 60, 95)  #
+COLOR_LAND = (242, 191, 141)  # A ztec Gold
+COLOR_SEA = (141, 213, 242)
+COLOR_WHITE = (255, 255, 255)
+COLOR_DEEPGREEN = (77, 150, 50)
+COLOR_BROWN = (117, 41, 19)
+
+PI = 3.141592653
 
 # Initializing Pygame
 pygame.init()
@@ -38,7 +46,7 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Swamp Life Simulation")
 # Initialing Color
 # screen.fill(COLOR_GRID)
-screen.fill(COLOR_DARK_BLUE)
+screen.fill(COLOR_LAND)
 # Drawing :This function is used to update the content of the entire display surface of the screen.
 pygame.display.flip()
 pygame.display.update()
@@ -46,23 +54,59 @@ pygame.display.update()
 # use current_gen as grid   np.zeros(row, col)
 current_gen = np.zeros((HEIGHT, WIDTH), dtype=int)
 
+'''
+mountains in sea :
+[450, 450],[300, 550],[600, 550]
+mountains in sea :
+[650, 450],[500, 550],[800, 550]
+mountains in sea :
+[850, 450],[700, 550],[1000, 550]
+mountains on land :
+[350, 50],[250, 150],[450, 150]
+'''
+
 
 # return a random position [x,y]
 def random_position():
     # keep away from the boarder, at least 10 points
-    return [random.randint(0, HEIGHT - 10), random.randint(0, WIDTH - 10)]
+    recreate = True
+    while recreate:
+        [x, y] = [random.randint(0, HEIGHT - 10), random.randint(0, WIDTH - 10)]
+        # but not on the mountain
+        if myMap.mountains_cells[x, y] == 0:
+            recreate = False
+    return [x, y]
+
+
+def random_position_in_water():
+    # keep away from the boarder, at least 10 points
+    recreate = True
+    while recreate:
+        [x, y] = [random.randint(int(HEIGHT / 3), HEIGHT - 10), random.randint(0, WIDTH - 10)]
+        # but not on the mountain
+        if myMap.mountains_cells[x, y] == 0:
+            recreate = False
+    return [x, y]
 
 
 # create Map Object
 myMap = Map(WIDTH, HEIGHT)
-# Initialing terrain
-terrain_min_x = 100
-terrain_max_x = 410
-terrain_min_y = 80
-terrain_max_y = 90
 
-terrain = [[row, col] for row in range(terrain_min_x, terrain_max_x) for col in range(terrain_min_y, terrain_max_y)]
-myMap.set_terrain(terrain)
+# Initialing terrain (for high altitude)
+
+
+# Initialing mountains
+# Draws mountains in sea
+for xOffset in range(int(0.25 * WIDTH), int(0.75 * WIDTH), 200):
+    print(f"Initialing mountains in sea :\n {[150 + xOffset, int(0.55 * HEIGHT)]},"
+          f"{[0 + xOffset, int(0.75 * HEIGHT)]},{[300 + xOffset, int(0.75 * HEIGHT)]}")
+    myMap.set_mountains(150 + xOffset, int(0.55 * HEIGHT), 0 + xOffset, int(0.75 * HEIGHT), 300 + xOffset, int(0.75 * HEIGHT))
+
+# Draws mountains on land
+myMap.set_mountains(350, 50, 250, 150, 450, 150)
+print(f"Initialing mountains on land :\n{[350, 50]},{[250, 150]},{[450, 150]}")
+
+
 
 ducks = []
 newts = []
@@ -74,7 +118,7 @@ for i in range(5):
 # Initialing newt population
 
 for i in range(40):
-    newts.append(Newt(random_position(), myMap))
+    newts.append(Newt(random_position_in_water(), myMap))
     print(newts[i])
 
 myMap.add_creatures(ducks)
@@ -113,7 +157,7 @@ def update_cell():
         # pygame.draw.rect(screen, COLOR_DUCK, (col_moved, row_moved, width, height))
         if duck.state == duck.ADULT:
             img = duck_img
-        else:
+        elif duck.state == duck.EGG:
             img = duck_egg_img
         scaled_duck_img = pygame.transform.scale(img, (width, height))
         screen.blit(scaled_duck_img, (col_moved, row_moved))
@@ -123,7 +167,6 @@ def update_cell():
     if not alive_newt:
         print("aaa")
     for newt in alive_newt:
-        color = COLOR_NEWT
         row = newt.x
         col = newt.y
         # move aRnd board check
@@ -180,10 +223,25 @@ def reproduce_food(number):
 running = True
 
 
-def show_terrain():
-    width = terrain_max_y - terrain_min_y
-    height = terrain_max_x - terrain_min_x
-    pygame.draw.rect(screen, COLOR_TURQUOISE, (terrain_min_x, terrain_min_y, width, height))
+
+def draw_terrain():
+    # Draws the sea and waves
+    pygame.draw.rect(screen, COLOR_SEA, [0, int(HEIGHT / 3), WIDTH, int(HEIGHT * 2 / 3)], 0)
+    for xOffset in range(0, WIDTH, 30):
+        pygame.draw.arc(screen, COLOR_WHITE, [0 + xOffset, int(HEIGHT / 3) - 10, 30, 30], PI / 2, PI, 12)
+        pygame.draw.arc(screen, COLOR_WHITE, [0 + xOffset, int(HEIGHT / 3) - 10, 30, 30], 0, PI / 2, 12)
+
+    # Draws the mountains in sea
+    for xOffset in range(int(0.25 * WIDTH), int(0.75 * WIDTH), 200):
+        print(f"mountains in sea :\n{[150 + xOffset, int(0.55 * HEIGHT)]}, "
+              f"{[0 + xOffset, int(0.75 * HEIGHT)]},{[300 + xOffset, int(0.75 * HEIGHT)]}")
+        pygame.draw.polygon(screen, COLOR_DEEPGREEN,
+                            [[150 + xOffset, int(0.55 * HEIGHT)], [0 + xOffset, int(0.75 * HEIGHT)],
+                             [300 + xOffset, int(0.75 * HEIGHT)]], 0)
+
+    # mountains on land
+    pygame.draw.polygon(screen, COLOR_DEEPGREEN, [[350, 50], [250, 150], [450, 150]], 0)
+    print(f"mountains on land :\n{[350, 50]},{[250, 150]},{[450, 150]}")
 
 
 while True:
@@ -202,16 +260,19 @@ while True:
             running = False
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
             running = not running
+        if pygame.mouse.get_pos()[0]:
+            pos = pygame.mouse.get_pos()
+            print(f"mouse click at ({pos})")
 
     # completely fill the screen with initialing colour
-    #screen.fill(COLOR_GRID)
-    screen.fill(COLOR_DARK_BLUE)
+    # screen.fill(COLOR_GRID)
+    screen.fill(COLOR_LAND)
     if running:
+        draw_terrain()
         current_gen = update_cell()
         #
         reproduce_food(25)
         # show terrain
-        show_terrain()
 
         pygame.display.update()
 

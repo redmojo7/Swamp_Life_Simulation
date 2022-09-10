@@ -144,12 +144,14 @@ class Duck(Creature):
     TIME_2_DEATH = 50
     EGG = "egg"
     ADULT = "adult"
+    VELOCITY_SWIMMING = 10
+    VELOCITY_RUNNING = 15
 
     def __init__(self, pos, map):
         super().__init__(pos, map)  # Call parent __init__
         self.egg = None
         self.state = self.EGG
-        self.velocity = 10  # velocity / speed of movement
+        self.velocity = self.VELOCITY_SWIMMING  # velocity / speed of movement
         self.vision = 50  # can see food from max 40 points away
 
     def __str__(self):
@@ -187,6 +189,14 @@ class Duck(Creature):
                 self.egg = [self.x, self.y]
             if self.age > self.TIME_2_DEATH:  # death
                 self.state = self.DEATH
+        # Ducks can run around 6-8 miles per hour
+        # Ducks can swim up to 6 miles per hour
+        # Is the duck on land?
+        if [self.x, self.y] in self.map.land:
+            self.velocity = self.VELOCITY_RUNNING
+        else:
+            self.velocity = self.VELOCITY_SWIMMING
+
 
     def get_size(self):
         if self.state == "egg":

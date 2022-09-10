@@ -10,6 +10,7 @@
 #
 import numpy as np
 from swamp import Duck, Newt
+from tools import is_inside
 
 
 class Map:
@@ -20,18 +21,17 @@ class Map:
 
     # foods, etc. is a list of each food position, like [[1,2],[1,3]]
     foods = []
-    terrain = []
 
     # foods, etc. is a numpy array, value 1 means that entity exist here
     food_cells = None
-    terrain_cells = None
 
     def __init__(self, width=500, height=500):
+        # width:y:col,  height:x:row
         # by default, map are 500*500
         self.width = width
         self.height = height
         self.food_cells = np.zeros((height, width), dtype=int)
-        self.terrain_cells = np.zeros((height, width), dtype=int)
+        self.mountains_cells = np.zeros((height, width), dtype=int)
 
     def __str__(self):
         return f"Map {self.width}*{self.height} with {len(self.livings)} livings and {len(self.foods)} foods."
@@ -47,11 +47,15 @@ class Map:
         self.foods.remove(position)
         self.food_cells[position[0], position[1]] = 0
 
-    def set_terrain(self, positions):
-        self.terrain = positions
-        # put all altitude into cells
-        for x, y in positions:
-            self.terrain_cells[x, y] = 1
+    def set_mountains(self, x1, y1, x2, y2, x3, y3):
+        x_min = min(x1, x2, x3)
+        x_max = max(x1, x2, x3)
+        y_min = min(y1, y2, y3)
+        y_max = max(y1, y2, y3)
+        for row in range(y_min, y_max):
+            for col in range(x_min, x_max):
+                if is_inside(x1, y1, x2, y2, x3, y3, col, row):
+                    self.mountains_cells[row, col] = 1
 
     def add_creatures(self, creatures):
         for c in creatures:
