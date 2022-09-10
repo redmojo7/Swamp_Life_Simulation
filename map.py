@@ -9,7 +9,7 @@
 # no
 #
 import numpy as np
-from swamp import Duck, Newt
+from swamp import Duck, Shrimp, Newt
 from tools import is_inside, get_edge_points
 
 
@@ -67,6 +67,8 @@ class Map:
                 self.ducks_list.append(c)
             elif isinstance(c, Newt):
                 self.newts_list.append(c)
+            elif isinstance(c, Shrimp):
+                self.shrimps_list.append(c)
 
     def remove_newt(self, position):
         x = position[0]

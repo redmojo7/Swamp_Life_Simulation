@@ -16,7 +16,7 @@ import random
 import yaml
 
 from map import Map
-from swamp import Duck, Newt
+from swamp import Duck, Shrimp, Newt
 
 with open("config/config.yml") as config_file:
     config = yaml.safe_load(config_file)
@@ -56,31 +56,7 @@ pygame.display.flip()
 pygame.display.update()
 
 # use current_gen as grid   np.zeros(row, col)
-current_gen = np.zeros((HEIGHT, WIDTH), dtype=int)
-
-
-# return a random position [x,y]
-def random_position():
-    # keep away from the boarder, at least 10 points
-    recreate = True
-    while recreate:
-        [col, row] = [random.randint(0, WIDTH - 10), random.randint(0, HEIGHT - 10)]
-        # but not on the mountain
-        if my_map.mountains_cells[row, col] == 0:
-            recreate = False
-    return [col, row]
-
-
-def random_position_in_water():
-    # keep away from the boarder, at least 10 points
-    recreate = True
-    while recreate:
-        [col, row] = [random.randint(0, WIDTH - 10), random.randint(int(HEIGHT / 3), HEIGHT - 10)]
-        # but not on the mountain
-        if my_map.mountains_cells[row, col] == 0:
-            recreate = False
-    return [col, row]
-
+# current_gen = np.zeros((HEIGHT, WIDTH), dtype=int)
 
 # create Map Object
 my_map = Map(WIDTH, HEIGHT)
@@ -112,29 +88,64 @@ print(f"Initialing mountains on land :\n"
       f"{[int(0.4 * WIDTH) + EXPANDED_POINT, int(0.25 * HEIGHT) + EXPANDED_POINT]}")
 
 # Initialing lands
+#
+#
+#
+#
+#
+
+
+# return a random position [x,y]
+def random_position():
+    # keep away from the boarder, at least 10 points
+    recreate = True
+    while recreate:
+        [col, row] = [random.randint(0, WIDTH - 10), random.randint(0, HEIGHT - 10)]
+        # but not on the mountain
+        if my_map.mountains_cells[row, col] == 0:
+            recreate = False
+    return [col, row]
+
+
+def random_position_in_water():
+    # keep away from the boarder, at least 10 points
+    recreate = True
+    while recreate:
+        [col, row] = [random.randint(0, WIDTH - 10), random.randint(int(HEIGHT / 3), HEIGHT - 10)]
+        # but not on the mountain
+        if my_map.mountains_cells[row, col] == 0:
+            recreate = False
+    return [col, row]
 
 
 ducks = []
 newts = []
+shrimps = []
 # Initialing duck population
-for i in range(30):
+for i in range(10):
     ducks.append(Duck(random_position()))
     print(ducks[i])
 
 # Initialing newt population
-for i in range(0):
+for i in range(10):
     newts.append(Newt(random_position_in_water()))
     print(newts[i])
 
+for i in range(20):
+    shrimps.append(Shrimp(random_position_in_water()))
+    print(shrimps[i])
+
 my_map.add_creatures(ducks)
 my_map.add_creatures(newts)
+my_map.add_creatures(shrimps)
 
 duck_img = pygame.image.load('png/duck2.png')
 duck_egg_img = pygame.image.load('png/duck_egg.png')
 newt_img = pygame.image.load('png/newt.png')
+shrimp_img = pygame.image.load('png/shrimp.png')
 
 
-def map_border_check(pos_x, pos_y, creature):
+def map_border_check(creature):
     # check left and right boarder for all creature
     if creature.x < 0:
         creature.x = 0
@@ -150,13 +161,15 @@ def map_border_check(pos_x, pos_y, creature):
     if isinstance(creature, Duck) and creature.state == creature.ADULT and creature.y < 0:
         creature.y = 0
     # for Newt
-    if isinstance(creature, Newt) and creature.y < int(HEIGHT / 3):
+    if isinstance(creature, Shrimp) and creature.y < int(HEIGHT / 3):
         # stay in water
         creature.y = int(HEIGHT / 3)
 
 
 def step_check(pos_x, pos_y, creature):
-    map_border_check(pos_x, pos_y, creature)
+    #
+    map_border_check(creature)
+    #
     mountains_border_check(pos_x, pos_y, creature)
 
 
@@ -204,12 +217,69 @@ def update_cell():
     duck_info = my_font.render(f"Gen : {generation}", False, (0, 0, 0))
     screen.blit(duck_info, (int(0.9 * WIDTH), 0))
     # next_gen = np.zeros((HEIGHT, WIDTH), dtype=int)
+    # for ducks
+    update_cells_4_ducks()
+    # for newts
+    update_cells_4_newts()
+    # for shrimps
+    update_cells_4_shrimps()
+
+    # return next_gen
+
+
+def update_cells_4_shrimps():
+    my_map.shrimps_list = list(filter(lambda s: s.state != s.DEATH, my_map.shrimps_list))
+    shrimps_info = my_font.render(f"shrimp : {len(my_map.shrimps_list)}", False, (0, 0, 0))
+    screen.blit(shrimps_info, (int(0.9 * WIDTH), 35))
+    if not my_map.shrimps_list:
+        print("all shrimps die")
+    for shrimp in my_map.shrimps_list:
+        x = shrimp.x
+        y = shrimp.y
+        # move and board check
+        shrimp.step_change(my_map)
+        step_check(x, y, shrimp)
+        x_moved = shrimp.x
+        y_moved = shrimp.y
+        width = shrimp.get_size() - 1
+        height = shrimp.get_size() - 1
+        print(f"shrimp moved from position ({x},{y}) to position: "
+              f"({x_moved},{y_moved}) with size {shrimp.get_size()} ")
+        scaled_shrimp_img = pygame.transform.scale(shrimp_img, (width, height))
+        screen.blit(scaled_shrimp_img, (x_moved, y_moved))
+
+
+def update_cells_4_newts():
+    # remove newts who died
+    my_map.newts_list = list(filter(lambda n: n.state != n.DEATH, my_map.newts_list))
+    newt_info = my_font.render(f"newt : {len(my_map.newts_list)}", False, (0, 0, 0))
+    screen.blit(newt_info, (int(0.9 * WIDTH), 25))
+    if not my_map.newts_list:
+        print("all newts die")
+    for newt in my_map.newts_list:
+        x = newt.x
+        y = newt.y
+        # move and board check
+        newt.step_change(my_map)
+        step_check(x, y, newt)
+        x_moved = newt.x
+        y_moved = newt.y
+        width = newt.get_size() - 1
+        height = newt.get_size() - 1
+        print(
+            f"newt moved from position ({x},{y}) to position: "
+            f"({x_moved},{y_moved}) with size {newt.get_size()} ")
+        # pygame.draw.rect(screen, color, (col_moved, row_moved, width, height))
+        scaled_newt_img = pygame.transform.scale(newt_img, (width, height))
+        screen.blit(scaled_newt_img, (x_moved, y_moved))
+
+
+def update_cells_4_ducks():
     # add new egg to ducks
     mama_ducks = list(filter(lambda d: d.egg is not None, my_map.ducks_list))
     for duck in mama_ducks:
         ducks.append(Duck(duck.egg))
         duck.egg = None  # remove from mama
-
     # remove ducks who died
     my_map.ducks_list = list(filter(lambda d: d.state != d.DEATH, my_map.ducks_list))
     duck_info = my_font.render(f"duck : {len(my_map.ducks_list)}", False, (0, 0, 0))
@@ -234,30 +304,6 @@ def update_cell():
                 img = duck_egg_img
             scaled_duck_img = pygame.transform.scale(img, (width, height))
             screen.blit(scaled_duck_img, (x_moved, y_moved))
-
-    # remove newts who died
-    my_map.newts_list = list(filter(lambda n: n.state != n.DEATH, my_map.newts_list))
-    newt_info = my_font.render(f"newt : {len(my_map.newts_list)}", False, (0, 0, 0))
-    screen.blit(newt_info, (int(0.9 * WIDTH), 25))
-    if not my_map.newts_list:
-        print("all newts die")
-    for newt in my_map.newts_list:
-        x = newt.x
-        y = newt.y
-        # move and board check
-        newt.step_change(my_map)
-        step_check(x, y, newt)
-        x_moved = newt.x
-        y_moved = newt.y
-        width = newt.get_size() - 1
-        height = newt.get_size() - 1
-        print(
-            f"newt moved from position ({x},{y}) to position: "
-            f"({x_moved},{y_moved}) with size {newt.get_size()} ")
-        # pygame.draw.rect(screen, color, (col_moved, row_moved, width, height))
-        scaled_newt_img = pygame.transform.scale(newt_img, (width, height))
-        screen.blit(scaled_newt_img, (x_moved, y_moved))
-    # return next_gen
 
 
 food_positions = []

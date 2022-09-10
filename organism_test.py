@@ -1,7 +1,7 @@
 import numpy as np
 import shapely as shapely
 
-from swamp import Duck, Newt
+from swamp import Duck, Shrimp
 from map import Map
 from tools import is_inside, get_edge_points
 import matplotlib.pyplot as plt

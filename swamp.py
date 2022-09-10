@@ -137,7 +137,7 @@ class Duck(Creature):
         self.egg = None
         self.state = self.EGG
         self.velocity = self.VELOCITY_SWIMMING  # velocity / speed of movement
-        self.vision = 500  # can see food from max 40 points away
+        self.vision = 200  # can see food from max 40 points away
 
     def __str__(self):
         return f"{self.state} Duck aged {self.age} @ ({self.x},{self.y})"
@@ -189,9 +189,9 @@ class Duck(Creature):
 
     def get_size(self):
         if self.state == "egg":
-            size = 10
+            size = 20
         else:
-            size = 15
+            size = 25
         return size
 
     # eat a newt
@@ -205,13 +205,36 @@ class Newt(Creature):
 
     def __init__(self, pos):
         super().__init__(pos)  # Call parent __init__
-        self.velocity = 5
-        self.size = 10
+        self.velocity = 15
+        self.size = 15
         self.state = "Newt"
-        self.vision = 30  # can see food from max 40 points away
+        self.vision = 150  # can see food from max 40 points away
 
     def __str__(self):
         return f"Newt aged {self.age} @ ({self.x},{self.y})"
+
+    def step_change(self, my_map):
+        self.age += 1
+        if self.age > self.TIME_2_DEATH:  # death
+            self.state = self.DEATH
+        super().step_change(my_map)
+
+    def get_size(self):
+        return self.size
+
+
+class Shrimp(Creature):
+    TIME_2_DEATH = 50
+
+    def __init__(self, pos):
+        super().__init__(pos)  # Call parent __init__
+        self.velocity = 5
+        self.size = 8
+        self.state = "Shrimp"
+        self.vision = 80  # can see food from max 40 points away
+
+    def __str__(self):
+        return f"Shrimp aged {self.age} @ ({self.x},{self.y})"
 
     def step_change(self, my_map):
         self.age += 1
