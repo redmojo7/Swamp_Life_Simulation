@@ -13,14 +13,16 @@
 import numpy as np
 import pygame
 import random
+import yaml
 
 from map import Map
 from swamp import Duck, Newt
 
-HEIGHT = 500
-WIDTH = 1000
-POP = 20
-STEPS = 10
+with open("config/config.yml") as config_file:
+    config = yaml.safe_load(config_file)
+
+HEIGHT = config['window']['height']
+WIDTH = config['window']['width']
 
 COLOR_GRID = (40, 40, 40)
 COLOR_NEWT = (0, 255, 255)  # Cyan

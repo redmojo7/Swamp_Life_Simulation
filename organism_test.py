@@ -159,3 +159,9 @@ x, y = data.T
 #plt.scatter(x, y)
 #plt.ylabel('some numbers')
 #plt.show()
+
+import yaml
+with open("config/config.yml") as config_file:
+    config = yaml.safe_load(config_file)
+print(config['window']['height'])
+print(config['window']['width'])
