@@ -7,6 +7,8 @@
 #
 #
 
+import math
+
 
 # Calculating Manhattan Distance from Scratch
 # https://datagy.io/manhattan-distance-python/
@@ -79,21 +81,8 @@ def get_edge_points(x1, y1, x2, y2, x3, y3):
     x_max = max(x1, x2, x3)
     y_min = min(y1, y2, y3)
     y_max = max(y1, y2, y3)
-    for x in range(x_min, x_max):
-        for y in range(y_min, y_max):
-            if is_inside(x1, y1, x2, y2, x3, y3, x, y):
-                points.append([x, y])
-    return points
-
-
-def get_edge_points(x1, y1, x2, y2, x3, y3):
-    points = []
-    x_min = min(x1, x2, x3)
-    x_max = max(x1, x2, x3)
-    y_min = min(y1, y2, y3)
-    y_max = max(y1, y2, y3)
-    for x in range(x_min, x_max):
-        for y in range(y_min, y_max):
+    for x in range(x_min, x_max+1):
+        for y in range(y_min, y_max+1):
             if is_edge(x1, y1, x2, y2, x3, y3, x, y):
                 points.append([x, y])
     return points

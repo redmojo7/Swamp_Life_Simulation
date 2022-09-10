@@ -10,7 +10,7 @@
 #
 import numpy as np
 from swamp import Duck, Newt
-from tools import is_inside
+from tools import is_inside, get_edge_points
 
 
 class Map:
@@ -21,6 +21,7 @@ class Map:
 
     # foods, etc. is a list of each food position, like [[1,2],[1,3]]
     foods = []
+    mountains_borders = []
 
     # foods, etc. is a numpy array, value 1 means that entity exist here
     food_cells = None
@@ -40,12 +41,12 @@ class Map:
         self.foods = positions
         # put all foods into cells
         for x, y in positions:
-            self.food_cells[x, y] = 1
+            self.food_cells[y, x] = 1
 
     def eat_food(self, position):
         print(f"Eating food...@ {position[0]},{position[1]}")
         self.foods.remove(position)
-        self.food_cells[position[0], position[1]] = 0
+        self.food_cells[position[1], position[0]] = 0
 
     def set_mountains(self, x1, y1, x2, y2, x3, y3):
         x_min = min(x1, x2, x3)
@@ -56,6 +57,9 @@ class Map:
             for col in range(x_min, x_max):
                 if is_inside(x1, y1, x2, y2, x3, y3, col, row):
                     self.mountains_cells[row, col] = 1
+        # get all points of border of all mountains (join two list by '+')
+        self.mountains_borders += get_edge_points(x1, y1, x2, y2, x3, y3)
+
 
     def add_creatures(self, creatures):
         for c in creatures:
@@ -87,23 +91,17 @@ class Map:
     def get_ducks_cells(self):
         ducks_cells = np.zeros((self.height, self.width), dtype=int)
         for duck in self.ducks_list:
-            ducks_cells[duck.x, duck.y] = 1
+            ducks_cells[duck.y, duck.x] = 1
         return ducks_cells
 
     def get_newts_cells(self):
         newts_cells = np.zeros((self.height, self.width), dtype=int)
         for newt in self.newts_list:
-            newts_cells[newt.x, newt.y] = 1
+            newts_cells[newt.y, newt.x] = 1
         return newts_cells
 
     def get_shrimps_cells(self):
         shrimps_cells = np.zeros((self.height, self.width), dtype=int)
         for shrimp in self.shrimps_list:
-            shrimps_cells[shrimp.x, shrimp.y] = 1
+            shrimps_cells[shrimp.y, shrimp.x] = 1
         return shrimps_cells
-
-
-'''
-    def add_livings(self, livings):
-        self.livings = livings
-'''

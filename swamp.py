@@ -70,33 +70,19 @@ class Creature(object):  #
         # change position for x
         self.x = x_moved
 
-    def random_run_x(self, my_map):
-        x_moved = self.x + random.choice([-abs(self.velocity), 0, self.velocity])
-        if x_moved < 0:
-            x_moved = 0
-        # "height - self.get_size()" --- prevent living cross border at the first time
-        if x_moved > my_map.width - self.get_size():
-            x_moved = my_map.width - self.get_size()
-        # change position for x
-        self.x = x_moved
+    def random_run_x(self):
+        self.x += random.choice([-abs(self.velocity), 0, self.velocity])
 
-    def random_run_y(self, my_map):
-        y_moved = self.y + random.choice([-abs(self.velocity), 0, self.velocity])
-        if y_moved < 0:
-            y_moved = 0
-        # "width - self.get_size()" --- prevent living cross border at the first time
-        if y_moved >= my_map.height - self.get_size():
-            y_moved = my_map.height - self.get_size()
-        # change position for y
-        self.y = y_moved
+    def random_run_y(self):
+        self.y += random.choice([-abs(self.velocity), 0, self.velocity])
 
     # random run
-    def random_run(self, my_map):
+    def random_run(self):
         if random.random() < 0.5:
             print("Random running on x")
-            self.random_run_x(my_map)
+            self.random_run_x()
         else:
-            self.random_run_y(my_map)
+            self.random_run_y()
             print("Random running on y")
 
     def step_change(self, my_map):
@@ -114,7 +100,7 @@ class Creature(object):  #
                 self.move_to_target(food)
         else:
             # there is no food, then random running
-            self.random_run(my_map)
+            self.random_run()
 
     def saw_alive_newts(self, my_map):
         return my_map.get_newts_pos() and self.search_target(my_map.get_newts_cells())
@@ -140,18 +126,18 @@ class Duck(Creature):
     TIME_2_HATCH = 4
     TIME_2_LAY_EGG = 10
     TIME_2_AGED = 15
-    TIME_2_DEATH = 50
+    TIME_2_DEATH = 100
     EGG = "egg"
     ADULT = "adult"
-    VELOCITY_SWIMMING = 10
-    VELOCITY_RUNNING = 15
+    VELOCITY_SWIMMING = 30
+    VELOCITY_RUNNING = 40
 
     def __init__(self, pos):
         super().__init__(pos)  # Call parent __init__
         self.egg = None
         self.state = self.EGG
         self.velocity = self.VELOCITY_SWIMMING  # velocity / speed of movement
-        self.vision = 50  # can see food from max 40 points away
+        self.vision = 500  # can see food from max 40 points away
 
     def __str__(self):
         return f"{self.state} Duck aged {self.age} @ ({self.x},{self.y})"
@@ -178,7 +164,7 @@ class Duck(Creature):
                 else:
                     self.move_to_target(position)
             else:
-                super().random_run(my_map)  # Call parent step_change
+                super().random_run()  # Call parent step_change
 
     def change_status(self):
         self.age += 1
@@ -205,7 +191,7 @@ class Duck(Creature):
         if self.state == "egg":
             size = 10
         else:
-            size = 20
+            size = 15
         return size
 
     # eat a newt
@@ -215,11 +201,11 @@ class Duck(Creature):
 
 
 class Newt(Creature):
-    TIME_2_DEATH = 50
+    TIME_2_DEATH = 80
 
     def __init__(self, pos):
         super().__init__(pos)  # Call parent __init__
-        self.velocity = 3
+        self.velocity = 5
         self.size = 10
         self.state = "Newt"
         self.vision = 30  # can see food from max 40 points away

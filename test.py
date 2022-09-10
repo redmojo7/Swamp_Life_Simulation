@@ -16,10 +16,9 @@ import random
 
 from map import Map
 from swamp import Duck, Newt
-from tools import is_inside, is_outside
 
-HEIGHT = 600
-WIDTH = 1200
+HEIGHT = 500
+WIDTH = 1000
 POP = 20
 STEPS = 10
 
@@ -37,9 +36,12 @@ COLOR_DEEPGREEN = (77, 150, 50)
 COLOR_BROWN = (117, 41, 19)
 
 PI = 3.141592653
+generation = 0
 
 # Initializing Pygame
 pygame.init()
+# setting the pygame font style and size of font
+my_font = pygame.font.SysFont('Comic Sans MS', 12)
 # Initializing surface, create the display screen object  pygame.display.set_mode((width, height))
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 # set the pygame window name
@@ -53,17 +55,6 @@ pygame.display.update()
 
 # use current_gen as grid   np.zeros(row, col)
 current_gen = np.zeros((HEIGHT, WIDTH), dtype=int)
-
-'''
-mountains in sea :
-[450, 450],[300, 550],[600, 550]
-mountains in sea :
-[650, 450],[500, 550],[800, 550]
-mountains in sea :
-[850, 450],[700, 550],[1000, 550]
-mountains on land :
-[350, 50],[250, 150],[450, 150]
-'''
 
 
 # return a random position [x,y]
@@ -97,29 +88,38 @@ my_map = Map(WIDTH, HEIGHT)
 
 # Initialing mountains
 # triangle (top_middle, left_bottom, right_bottom)
-# Draws mountains in sea (extend mountains for 10 points for each side)
-# triangle ([x1, y1-10], [x2-10, y2+10], [x3+10, y3+10]])
-for xOffset in range(int(0.125 * WIDTH), int(0.625 * WIDTH), int(WIDTH/6)):
-    print(f"Initialing mountains in sea :\n {[int(0.125 * WIDTH) + xOffset, int(0.55 * HEIGHT)-10]},"
-          f"{[0 + xOffset -10, int(0.75 * HEIGHT)+10]},{[int(0.25 * WIDTH) + xOffset+10, int(0.75 * HEIGHT)+10]}")
-    my_map.set_mountains(int(0.125 * WIDTH) + xOffset, int(0.55 * HEIGHT)-10, 0 + xOffset-10, int(0.75 * HEIGHT)+10, int(0.25 * WIDTH) + xOffset+10, int(0.75 * HEIGHT)+10)
+# Draws the mountains in sea
+EXPANDED_POINT = 15
+for x_offset in range(int(0.125 * WIDTH), int(0.625 * WIDTH), int(WIDTH / 6)):
+    print(f"Initialing mountains in sea :\n "
+          f"{[int(0.125 * WIDTH) + x_offset, int(0.55 * HEIGHT) - EXPANDED_POINT]},"
+          f"{[0 + x_offset - EXPANDED_POINT, int(0.75 * HEIGHT) + EXPANDED_POINT]},"
+          f"{[int(0.25 * WIDTH) + x_offset + EXPANDED_POINT, int(0.75 * HEIGHT) + EXPANDED_POINT]}")
+    my_map.set_mountains(int(0.125 * WIDTH) + x_offset, int(0.55 * HEIGHT) - EXPANDED_POINT,
+                         0 + x_offset - EXPANDED_POINT, int(0.75 * HEIGHT) + EXPANDED_POINT,
+                         int(0.25 * WIDTH) + x_offset + EXPANDED_POINT, int(0.75 * HEIGHT) + EXPANDED_POINT)
 
 # Draws mountains on land (extend mountains for 10 points for each side)
 
-my_map.set_mountains(int(0.3 * WIDTH), int(0.08 * HEIGHT), int(0.2 * WIDTH), int(0.25 * HEIGHT), int(0.4 * WIDTH), int(0.25 * HEIGHT))
-print(f"Initialing mountains on land :\n{[350, 50]},{[250, 150]},{[450, 150]}")
+my_map.set_mountains(int(0.3 * WIDTH), int(0.08 * HEIGHT) - EXPANDED_POINT,
+                     int(0.2 * WIDTH) - EXPANDED_POINT, int(0.25 * HEIGHT) + EXPANDED_POINT,
+                     int(0.4 * WIDTH) + EXPANDED_POINT, int(0.25 * HEIGHT) + EXPANDED_POINT)
+print(f"Initialing mountains on land :\n"
+      f"{[int(0.3 * WIDTH), int(0.08 * HEIGHT) - EXPANDED_POINT]},"
+      f"{[int(0.2 * WIDTH) - EXPANDED_POINT, int(0.25 * HEIGHT) + EXPANDED_POINT]},"
+      f"{[int(0.4 * WIDTH) + EXPANDED_POINT, int(0.25 * HEIGHT) + EXPANDED_POINT]}")
 
+# Initialing lands
 
 
 ducks = []
 newts = []
 # Initialing duck population
-for i in range(10):
+for i in range(30):
     ducks.append(Duck(random_position()))
     print(ducks[i])
 
 # Initialing newt population
-
 for i in range(0):
     newts.append(Newt(random_position_in_water()))
     print(newts[i])
@@ -132,9 +132,76 @@ duck_egg_img = pygame.image.load('png/duck_egg.png')
 newt_img = pygame.image.load('png/newt.png')
 
 
+def map_border_check(pos_x, pos_y, creature):
+    # check left and right boarder for all creature
+    if creature.x < 0:
+        creature.x = 0
+    # "WIDTH - creature.get_size()" --- prevent living cross border at the first time
+    if creature.x > WIDTH - creature.get_size():
+        creature.x = my_map.width - creature.get_size()
+    # check bottom boarder for all
+    # "HEIGHT - creature.get_size()" --- prevent living cross border at the first time
+    if creature.y >= HEIGHT - creature.get_size():
+        creature.y = HEIGHT - creature.get_size()
+    # check top boarder for each differently
+    # for Duck
+    if isinstance(creature, Duck) and creature.state == creature.ADULT and creature.y < 0:
+        creature.y = 0
+    # for Newt
+    if isinstance(creature, Newt) and creature.y < int(HEIGHT / 3):
+        # stay in water
+        creature.y = int(HEIGHT / 3)
+
+
+def step_check(pos_x, pos_y, creature):
+    map_border_check(pos_x, pos_y, creature)
+    mountains_border_check(pos_x, pos_y, creature)
+
+
+def mountains_border_check(pos_x, pos_y, creature):
+    # find the nearst border point before moving
+    [n_x, n_y] = min([t for t in my_map.mountains_borders],
+                     key=lambda t: pow(t[0] - pos_x, 2) + pow(t[1] - pos_y, 2))
+    #  if the rectangle area of passing through contains any mountain points
+    #  then wrong_way = Ture
+    #    x,y-----------
+    #    --------------
+    #    ----------x2,y2
+    wrong_way = False
+    for col in range(min(pos_x, creature.x), max(pos_x, creature.x) + 1):
+        for row in range(min(pos_y, creature.y), max(pos_y, creature.y) + 1):
+            if my_map.mountains_cells[row, col] == 1:
+                wrong_way = True
+                break
+        if wrong_way:
+            break
+    if wrong_way:
+        print(f"{creature} move to boarder of mountain ({n_x},{n_y})")
+        # move away from this mountain border point
+        for [col, row] in [[n_x, n_y - 1], [n_x, n_y + 1], [n_x - 1, n_y], [n_x + 1, n_y]]:
+            if my_map.mountains_cells[row, col] == 0:  # move to this way
+                if col > n_x:
+                    creature.x = n_x + creature.velocity
+                    break
+                if col < n_x:
+                    creature.x = n_x - creature.velocity
+                    break
+                if row > n_y:
+                    creature.y = n_y + creature.velocity
+                    break
+                if row < n_y:
+                    creature.y = n_y - creature.velocity
+                    break
+        print(f"new position: {creature.x}, {creature.y}")
+
+
 def update_cell():
-    next_gen = np.zeros((HEIGHT, WIDTH), dtype=int)
     print("\n ### next generation ###")
+    global generation
+    generation = generation + 1
+    duck_info = my_font.render(f"Gen : {generation}", False, (0, 0, 0))
+    screen.blit(duck_info, (int(0.9 * WIDTH), 0))
+    # next_gen = np.zeros((HEIGHT, WIDTH), dtype=int)
     # add new egg to ducks
     mama_ducks = list(filter(lambda d: d.egg is not None, my_map.ducks_list))
     for duck in mama_ducks:
@@ -142,51 +209,53 @@ def update_cell():
         duck.egg = None  # remove from mama
 
     # remove ducks who died
-    alive_duck = list(filter(lambda d: d.state != d.DEATH, my_map.ducks_list))
-    for duck in alive_duck:
+    my_map.ducks_list = list(filter(lambda d: d.state != d.DEATH, my_map.ducks_list))
+    duck_info = my_font.render(f"duck : {len(my_map.ducks_list)}", False, (0, 0, 0))
+    screen.blit(duck_info, (int(0.9 * WIDTH), 15))
+    for duck in my_map.ducks_list:
         x = duck.x
         y = duck.y
-        # if there is any newts stay at same position, then an adult duck will eat one of them, and stay same cell
-        # newts_at_same_cell = list(filter(lambda n: n.x == duck.x and n.y == duck.y, newts))
         # move
         duck.step_change(my_map)
-        #step_validate()
+        step_check(x, y, duck)
         x_moved = duck.x
         y_moved = duck.y
-        # pygame.drawduck.y
         width = duck.get_size() - 1
         height = duck.get_size() - 1
-        print(
-            f"duck moved from position ({x}, {y}) to position: ({x_moved}, {y_moved}) with size {duck.get_size()} ")
+        print(f"duck moved from position ({x},{y}) to position: "
+              f"({x_moved},{y_moved}) with size {duck.get_size()} ")
         # pygame.draw.rect(screen, COLOR_DUCK, (col_moved, row_moved, width, height))
-        if duck.state == duck.ADULT:
-            img = duck_img
-        elif duck.state == duck.EGG:
-            img = duck_egg_img
-        scaled_duck_img = pygame.transform.scale(img, (width, height))
-        screen.blit(scaled_duck_img, (x_moved, y_moved))
+        if duck.state != duck.DEATH:
+            if duck.state == duck.ADULT:
+                img = duck_img
+            elif duck.state == duck.EGG:
+                img = duck_egg_img
+            scaled_duck_img = pygame.transform.scale(img, (width, height))
+            screen.blit(scaled_duck_img, (x_moved, y_moved))
 
     # remove newts who died
-    alive_newt = list(filter(lambda n: n.state != n.DEATH, my_map.newts_list))
-    if not alive_newt:
-        print("aaa")
-    for newt in alive_newt:
+    my_map.newts_list = list(filter(lambda n: n.state != n.DEATH, my_map.newts_list))
+    newt_info = my_font.render(f"newt : {len(my_map.newts_list)}", False, (0, 0, 0))
+    screen.blit(newt_info, (int(0.9 * WIDTH), 25))
+    if not my_map.newts_list:
+        print("all newts die")
+    for newt in my_map.newts_list:
         x = newt.x
         y = newt.y
-        # move aRnd board check
+        # move and board check
         newt.step_change(my_map)
-
+        step_check(x, y, newt)
         x_moved = newt.x
         y_moved = newt.y
         width = newt.get_size() - 1
         height = newt.get_size() - 1
         print(
-            f"newt moved from position ({x}, {y}) to position: ({x_moved}, {y_moved}) with size {newt.get_size()} ")
+            f"newt moved from position ({x},{y}) to position: "
+            f"({x_moved},{y_moved}) with size {newt.get_size()} ")
         # pygame.draw.rect(screen, color, (col_moved, row_moved, width, height))
         scaled_newt_img = pygame.transform.scale(newt_img, (width, height))
         screen.blit(scaled_newt_img, (x_moved, y_moved))
-
-    return next_gen
+    # return next_gen
 
 
 food_positions = []
@@ -227,25 +296,30 @@ def reproduce_food(number):
 running = True
 
 
-
 def draw_terrain():
     # Draws the sea and waves
     pygame.draw.rect(screen, COLOR_SEA, [0, int(HEIGHT / 3), WIDTH, int(HEIGHT * 2 / 3)], 0)
-    for xOffset in range(0, WIDTH, 30):
-        pygame.draw.arc(screen, COLOR_WHITE, [0 + xOffset, int(HEIGHT / 3) - 10, 30, 30], PI / 2, PI, 12)
-        pygame.draw.arc(screen, COLOR_WHITE, [0 + xOffset, int(HEIGHT / 3) - 10, 30, 30], 0, PI / 2, 12)
+    for x_offset in range(0, WIDTH, 30):
+        pygame.draw.arc(screen, COLOR_WHITE, [0 + x_offset, int(HEIGHT / 3) - 10, 30, 30], PI / 2, PI, 12)
+        pygame.draw.arc(screen, COLOR_WHITE, [0 + x_offset, int(HEIGHT / 3) - 10, 30, 30], 0, PI / 2, 12)
 
-    # Draws the mountains in sea
-    for xOffset in range(int(0.125 * WIDTH), int(0.625 * WIDTH), int(WIDTH/6)):
-        print(f"mountains in sea :\n{[int(0.125 * WIDTH) + xOffset, int(0.55 * HEIGHT)]}, "
-              f"{[0 + xOffset, int(0.75 * HEIGHT)]},{[int(0.25 * WIDTH) + xOffset, int(0.75 * HEIGHT)]}")
+    # Draws mountains in sea (zoom out mountains for 20 points for each side)
+    # triangle ([x1, y1+20], [x2+20, y2-20], [x3-20, y3-20]])
+    for x_offset in range(int(0.125 * WIDTH), int(0.625 * WIDTH), int(WIDTH / 6)):
+        # print(f"mountains in sea :\n{[int(0.125 * WIDTH) + x_offset, int(0.55 * HEIGHT)]}, "
+        #      f"{[0 + x_offset, int(0.75 * HEIGHT)]},{[int(0.25 * WIDTH) + x_offset, int(0.75 * HEIGHT)]}")
         pygame.draw.polygon(screen, COLOR_DEEPGREEN,
-                            [[int(0.125 * WIDTH) + xOffset, int(0.55 * HEIGHT)], [0 + xOffset, int(0.75 * HEIGHT)],
-                             [int(0.25 * WIDTH) + xOffset, int(0.75 * HEIGHT)]], 0)
+                            [[int(0.125 * WIDTH) + x_offset, int(0.55 * HEIGHT)],
+                             [0 + x_offset, int(0.75 * HEIGHT)],
+                             [int(0.25 * WIDTH) + x_offset, int(0.75 * HEIGHT)]], 0)
 
-    # mountains on land
-    pygame.draw.polygon(screen, COLOR_DEEPGREEN, [[int(0.3 * WIDTH), int(0.08 * HEIGHT)], [int(0.2 * WIDTH), int(0.25 * HEIGHT)], [int(0.4 * WIDTH), int(0.25 * HEIGHT)]], 0)
-    print(f"mountains on land :\n{[350, 50]},{[250, 150]},{[450, 150]}")
+    # mountains on land(zoom out mountains for 20 points for each side)
+    #     # triangle ([x1, y1+20], [x2+20, y2-20], [x3-20, y3-20]])
+    pygame.draw.polygon(screen, COLOR_DEEPGREEN,
+                        [[int(0.3 * WIDTH), int(0.08 * HEIGHT)],
+                         [int(0.2 * WIDTH), int(0.25 * HEIGHT)],
+                         [int(0.4 * WIDTH), int(0.25 * HEIGHT)]], 0)
+    # print(f"mountains on land :\n{[350, 50]},{[250, 150]},{[450, 150]}")
 
 
 while True:
@@ -267,13 +341,16 @@ while True:
         if pygame.mouse.get_pos()[0]:
             pos = pygame.mouse.get_pos()
             print(f"mouse click at ({pos})")
+            point_info = my_font.render(f"point : {pos}", False, (0, 0, 0))
+            screen.fill(COLOR_LAND, (10, 10, 100, 20))
+            screen.blit(point_info, (10, 10))
+            pygame.display.update()
 
-    # completely fill the screen with initialing colour
-    # screen.fill(COLOR_GRID)
-    screen.fill(COLOR_LAND)
     if running:
+        # completely fill the screen with initialing colour
+        screen.fill(COLOR_LAND)
         draw_terrain()
-        current_gen = update_cell()
+        update_cell()
         #
         reproduce_food(25)
         # show terrain

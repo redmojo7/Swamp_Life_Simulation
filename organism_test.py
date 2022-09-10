@@ -1,20 +1,22 @@
 import numpy as np
+import shapely as shapely
 
 from swamp import Duck, Newt
 from map import Map
 from tools import is_inside, get_edge_points
+import matplotlib.pyplot as plt
+from shapely.geometry import Point, Polygon
 
-map = Map(500, 500)
-map.add_food([[100, 100]])
+my_map = Map(500, 500)
 
-duck = Duck([10, 20], map)
+duck = Duck([10, 20])
 for i in range(100):
-    duck.step_change()
+    duck.step_change(my_map)
     print(duck.__str__())
 '''
-newt = Newt([10, 20], map)
+newt = Newt([10, 20])
 for i in range(6):
-    newt.step_change()
+    newt.step_change(my_map)
     print(newt.__str__())
 '''
 food_cells = np.zeros((50, 50), dtype=int)
@@ -127,3 +129,33 @@ def show_land():
     height = land_max_x - land_min_x
     # pygame.draw.rect(screen, COLOR_LAND, (land_min_x, land_min_y, width, height))
 
+
+#b = np.degrees(angle([-82,-29], [-82,-29]))
+#print(a)
+
+
+for index in range(min(10,5), max(10,5)+1):
+    print(index)
+
+
+bbox = [(0, 0), (2,2), (4,0)]
+poly = Polygon(bbox)
+point = Point(2, 1)
+result = poly.contains(point)
+
+print(result)
+print(poly)
+
+
+points = get_edge_points(0,0,2,2,4,0)
+print(points)
+
+data = np.array(points)
+data = np.array(points)
+
+# Taking transpose
+x, y = data.T
+# plot our list in X,Y coordinates
+#plt.scatter(x, y)
+#plt.ylabel('some numbers')
+#plt.show()
