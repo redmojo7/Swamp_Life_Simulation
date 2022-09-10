@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a80f6687-70e5-4d93-96a1-8d94ba02ed85" name="Changes" comment="Draw mountains on map">
+    <list default="true" id="a80f6687-70e5-4d93-96a1-8d94ba02ed85" name="Changes" comment="Take off 'map' argument from construct of Class Creature">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/organism_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/organism_test.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/swamp.py" beforeDir="false" afterPath="$PROJECT_DIR$/swamp.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
     </list>
@@ -268,7 +269,14 @@
       <option name="project" value="LOCAL" />
       <updated>1662770344235</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Take off 'map' argument from construct of Class Creature">
+      <created>1662771289039</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1662771289039</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -294,7 +302,8 @@
     <MESSAGE value="Add terrain &amp;&amp; show newt with png" />
     <MESSAGE value="Add tools.py and update random move" />
     <MESSAGE value="Draw mountains on map" />
-    <option name="LAST_COMMIT_MESSAGE" value="Draw mountains on map" />
+    <MESSAGE value="Take off 'map' argument from construct of Class Creature" />
+    <option name="LAST_COMMIT_MESSAGE" value="Take off 'map' argument from construct of Class Creature" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -303,11 +312,6 @@
           <url>file://$PROJECT_DIR$/main.py</url>
           <line>8</line>
           <option name="timeStamp" value="1" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/test.py</url>
-          <line>167</line>
-          <option name="timeStamp" value="26" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/organism_test.py</url>
@@ -326,12 +330,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/test.py</url>
-          <line>237</line>
+          <line>241</line>
           <option name="timeStamp" value="56" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/test.py</url>
-          <line>243</line>
+          <line>247</line>
           <option name="timeStamp" value="58" />
         </line-breakpoint>
       </breakpoints>

@@ -75,8 +75,8 @@ class Creature(object):  #
         if x_moved < 0:
             x_moved = 0
         # "height - self.get_size()" --- prevent living cross border at the first time
-        if x_moved > my_map.height - self.get_size():
-            x_moved = my_map.height - self.get_size()
+        if x_moved > my_map.width - self.get_size():
+            x_moved = my_map.width - self.get_size()
         # change position for x
         self.x = x_moved
 
@@ -85,8 +85,8 @@ class Creature(object):  #
         if y_moved < 0:
             y_moved = 0
         # "width - self.get_size()" --- prevent living cross border at the first time
-        if y_moved >= my_map.width - self.get_size():
-            y_moved = my_map.width - self.get_size()
+        if y_moved >= my_map.height - self.get_size():
+            y_moved = my_map.height - self.get_size()
         # change position for y
         self.y = y_moved
 

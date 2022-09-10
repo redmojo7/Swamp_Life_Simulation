@@ -71,22 +71,22 @@ def random_position():
     # keep away from the boarder, at least 10 points
     recreate = True
     while recreate:
-        [x, y] = [random.randint(0, HEIGHT - 10), random.randint(0, WIDTH - 10)]
+        [col, row] = [random.randint(0, WIDTH - 10), random.randint(0, HEIGHT - 10)]
         # but not on the mountain
-        if my_map.mountains_cells[x, y] == 0:
+        if my_map.mountains_cells[row, col] == 0:
             recreate = False
-    return [x, y]
+    return [col, row]
 
 
 def random_position_in_water():
     # keep away from the boarder, at least 10 points
     recreate = True
     while recreate:
-        [x, y] = [random.randint(int(HEIGHT / 3), HEIGHT - 10), random.randint(0, WIDTH - 10)]
+        [col, row] = [random.randint(0, WIDTH - 10), random.randint(int(HEIGHT / 3), HEIGHT - 10)]
         # but not on the mountain
-        if my_map.mountains_cells[x, y] == 0:
+        if my_map.mountains_cells[row, col] == 0:
             recreate = False
-    return [x, y]
+    return [col, row]
 
 
 # create Map Object
@@ -96,14 +96,17 @@ my_map = Map(WIDTH, HEIGHT)
 
 
 # Initialing mountains
-# Draws mountains in sea
-for xOffset in range(int(0.25 * WIDTH), int(0.75 * WIDTH), 200):
-    print(f"Initialing mountains in sea :\n {[150 + xOffset, int(0.55 * HEIGHT)]},"
-          f"{[0 + xOffset, int(0.75 * HEIGHT)]},{[300 + xOffset, int(0.75 * HEIGHT)]}")
-    my_map.set_mountains(150 + xOffset, int(0.55 * HEIGHT), 0 + xOffset, int(0.75 * HEIGHT), 300 + xOffset, int(0.75 * HEIGHT))
+# triangle (top_middle, left_bottom, right_bottom)
+# Draws mountains in sea (extend mountains for 10 points for each side)
+# triangle ([x1, y1-10], [x2-10, y2+10], [x3+10, y3+10]])
+for xOffset in range(int(0.125 * WIDTH), int(0.625 * WIDTH), int(WIDTH/6)):
+    print(f"Initialing mountains in sea :\n {[int(0.125 * WIDTH) + xOffset, int(0.55 * HEIGHT)-10]},"
+          f"{[0 + xOffset -10, int(0.75 * HEIGHT)+10]},{[int(0.25 * WIDTH) + xOffset+10, int(0.75 * HEIGHT)+10]}")
+    my_map.set_mountains(int(0.125 * WIDTH) + xOffset, int(0.55 * HEIGHT)-10, 0 + xOffset-10, int(0.75 * HEIGHT)+10, int(0.25 * WIDTH) + xOffset+10, int(0.75 * HEIGHT)+10)
 
-# Draws mountains on land
-my_map.set_mountains(350, 50, 250, 150, 450, 150)
+# Draws mountains on land (extend mountains for 10 points for each side)
+
+my_map.set_mountains(int(0.3 * WIDTH), int(0.08 * HEIGHT), int(0.2 * WIDTH), int(0.25 * HEIGHT), int(0.4 * WIDTH), int(0.25 * HEIGHT))
 print(f"Initialing mountains on land :\n{[350, 50]},{[250, 150]},{[450, 150]}")
 
 
@@ -111,13 +114,13 @@ print(f"Initialing mountains on land :\n{[350, 50]},{[250, 150]},{[450, 150]}")
 ducks = []
 newts = []
 # Initialing duck population
-for i in range(5):
+for i in range(10):
     ducks.append(Duck(random_position()))
     print(ducks[i])
 
 # Initialing newt population
 
-for i in range(40):
+for i in range(0):
     newts.append(Newt(random_position_in_water()))
     print(newts[i])
 
@@ -141,46 +144,47 @@ def update_cell():
     # remove ducks who died
     alive_duck = list(filter(lambda d: d.state != d.DEATH, my_map.ducks_list))
     for duck in alive_duck:
-        row = duck.x
-        col = duck.y
+        x = duck.x
+        y = duck.y
         # if there is any newts stay at same position, then an adult duck will eat one of them, and stay same cell
         # newts_at_same_cell = list(filter(lambda n: n.x == duck.x and n.y == duck.y, newts))
         # move
         duck.step_change(my_map)
-        row_moved = duck.x
-        col_moved = duck.y
+        #step_validate()
+        x_moved = duck.x
+        y_moved = duck.y
         # pygame.drawduck.y
         width = duck.get_size() - 1
         height = duck.get_size() - 1
         print(
-            f"duck moved from position ({row}, {col}) to position: ({row_moved}, {col_moved}) with size {duck.get_size()} ")
+            f"duck moved from position ({x}, {y}) to position: ({x_moved}, {y_moved}) with size {duck.get_size()} ")
         # pygame.draw.rect(screen, COLOR_DUCK, (col_moved, row_moved, width, height))
         if duck.state == duck.ADULT:
             img = duck_img
         elif duck.state == duck.EGG:
             img = duck_egg_img
         scaled_duck_img = pygame.transform.scale(img, (width, height))
-        screen.blit(scaled_duck_img, (col_moved, row_moved))
+        screen.blit(scaled_duck_img, (x_moved, y_moved))
 
     # remove newts who died
     alive_newt = list(filter(lambda n: n.state != n.DEATH, my_map.newts_list))
     if not alive_newt:
         print("aaa")
     for newt in alive_newt:
-        row = newt.x
-        col = newt.y
+        x = newt.x
+        y = newt.y
         # move aRnd board check
         newt.step_change(my_map)
 
-        row_moved = newt.x
-        col_moved = newt.y
+        x_moved = newt.x
+        y_moved = newt.y
         width = newt.get_size() - 1
         height = newt.get_size() - 1
         print(
-            f"newt moved from position ({row}, {col}) to position: ({row_moved}, {col_moved}) with size {newt.get_size()} ")
+            f"newt moved from position ({x}, {y}) to position: ({x_moved}, {y_moved}) with size {newt.get_size()} ")
         # pygame.draw.rect(screen, color, (col_moved, row_moved, width, height))
         scaled_newt_img = pygame.transform.scale(newt_img, (width, height))
-        screen.blit(scaled_newt_img, (col_moved, row_moved))
+        screen.blit(scaled_newt_img, (x_moved, y_moved))
 
     return next_gen
 
@@ -232,15 +236,15 @@ def draw_terrain():
         pygame.draw.arc(screen, COLOR_WHITE, [0 + xOffset, int(HEIGHT / 3) - 10, 30, 30], 0, PI / 2, 12)
 
     # Draws the mountains in sea
-    for xOffset in range(int(0.25 * WIDTH), int(0.75 * WIDTH), 200):
-        print(f"mountains in sea :\n{[150 + xOffset, int(0.55 * HEIGHT)]}, "
-              f"{[0 + xOffset, int(0.75 * HEIGHT)]},{[300 + xOffset, int(0.75 * HEIGHT)]}")
+    for xOffset in range(int(0.125 * WIDTH), int(0.625 * WIDTH), int(WIDTH/6)):
+        print(f"mountains in sea :\n{[int(0.125 * WIDTH) + xOffset, int(0.55 * HEIGHT)]}, "
+              f"{[0 + xOffset, int(0.75 * HEIGHT)]},{[int(0.25 * WIDTH) + xOffset, int(0.75 * HEIGHT)]}")
         pygame.draw.polygon(screen, COLOR_DEEPGREEN,
-                            [[150 + xOffset, int(0.55 * HEIGHT)], [0 + xOffset, int(0.75 * HEIGHT)],
-                             [300 + xOffset, int(0.75 * HEIGHT)]], 0)
+                            [[int(0.125 * WIDTH) + xOffset, int(0.55 * HEIGHT)], [0 + xOffset, int(0.75 * HEIGHT)],
+                             [int(0.25 * WIDTH) + xOffset, int(0.75 * HEIGHT)]], 0)
 
     # mountains on land
-    pygame.draw.polygon(screen, COLOR_DEEPGREEN, [[350, 50], [250, 150], [450, 150]], 0)
+    pygame.draw.polygon(screen, COLOR_DEEPGREEN, [[int(0.3 * WIDTH), int(0.08 * HEIGHT)], [int(0.2 * WIDTH), int(0.25 * HEIGHT)], [int(0.4 * WIDTH), int(0.25 * HEIGHT)]], 0)
     print(f"mountains on land :\n{[350, 50]},{[250, 150]},{[450, 150]}")
 
 

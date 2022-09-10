@@ -126,3 +126,4 @@ def show_land():
     width = land_max_y - land_min_y
     height = land_max_x - land_min_x
     # pygame.draw.rect(screen, COLOR_LAND, (land_min_x, land_min_y, width, height))
+
