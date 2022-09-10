@@ -73,7 +73,7 @@ def random_position():
     while recreate:
         [x, y] = [random.randint(0, HEIGHT - 10), random.randint(0, WIDTH - 10)]
         # but not on the mountain
-        if myMap.mountains_cells[x, y] == 0:
+        if my_map.mountains_cells[x, y] == 0:
             recreate = False
     return [x, y]
 
@@ -84,13 +84,13 @@ def random_position_in_water():
     while recreate:
         [x, y] = [random.randint(int(HEIGHT / 3), HEIGHT - 10), random.randint(0, WIDTH - 10)]
         # but not on the mountain
-        if myMap.mountains_cells[x, y] == 0:
+        if my_map.mountains_cells[x, y] == 0:
             recreate = False
     return [x, y]
 
 
 # create Map Object
-myMap = Map(WIDTH, HEIGHT)
+my_map = Map(WIDTH, HEIGHT)
 
 # Initialing terrain (for high altitude)
 
@@ -100,10 +100,10 @@ myMap = Map(WIDTH, HEIGHT)
 for xOffset in range(int(0.25 * WIDTH), int(0.75 * WIDTH), 200):
     print(f"Initialing mountains in sea :\n {[150 + xOffset, int(0.55 * HEIGHT)]},"
           f"{[0 + xOffset, int(0.75 * HEIGHT)]},{[300 + xOffset, int(0.75 * HEIGHT)]}")
-    myMap.set_mountains(150 + xOffset, int(0.55 * HEIGHT), 0 + xOffset, int(0.75 * HEIGHT), 300 + xOffset, int(0.75 * HEIGHT))
+    my_map.set_mountains(150 + xOffset, int(0.55 * HEIGHT), 0 + xOffset, int(0.75 * HEIGHT), 300 + xOffset, int(0.75 * HEIGHT))
 
 # Draws mountains on land
-myMap.set_mountains(350, 50, 250, 150, 450, 150)
+my_map.set_mountains(350, 50, 250, 150, 450, 150)
 print(f"Initialing mountains on land :\n{[350, 50]},{[250, 150]},{[450, 150]}")
 
 
@@ -112,17 +112,17 @@ ducks = []
 newts = []
 # Initialing duck population
 for i in range(5):
-    ducks.append(Duck(random_position(), myMap))
+    ducks.append(Duck(random_position()))
     print(ducks[i])
 
 # Initialing newt population
 
 for i in range(40):
-    newts.append(Newt(random_position_in_water(), myMap))
+    newts.append(Newt(random_position_in_water()))
     print(newts[i])
 
-myMap.add_creatures(ducks)
-myMap.add_creatures(newts)
+my_map.add_creatures(ducks)
+my_map.add_creatures(newts)
 
 duck_img = pygame.image.load('png/duck2.png')
 duck_egg_img = pygame.image.load('png/duck_egg.png')
@@ -133,20 +133,20 @@ def update_cell():
     next_gen = np.zeros((HEIGHT, WIDTH), dtype=int)
     print("\n ### next generation ###")
     # add new egg to ducks
-    mama_ducks = list(filter(lambda d: d.egg is not None, myMap.ducks_list))
+    mama_ducks = list(filter(lambda d: d.egg is not None, my_map.ducks_list))
     for duck in mama_ducks:
-        ducks.append(Duck(duck.egg, myMap))
+        ducks.append(Duck(duck.egg))
         duck.egg = None  # remove from mama
 
     # remove ducks who died
-    alive_duck = list(filter(lambda d: d.state != d.DEATH, myMap.ducks_list))
+    alive_duck = list(filter(lambda d: d.state != d.DEATH, my_map.ducks_list))
     for duck in alive_duck:
         row = duck.x
         col = duck.y
         # if there is any newts stay at same position, then an adult duck will eat one of them, and stay same cell
         # newts_at_same_cell = list(filter(lambda n: n.x == duck.x and n.y == duck.y, newts))
         # move
-        duck.step_change()
+        duck.step_change(my_map)
         row_moved = duck.x
         col_moved = duck.y
         # pygame.drawduck.y
@@ -163,14 +163,14 @@ def update_cell():
         screen.blit(scaled_duck_img, (col_moved, row_moved))
 
     # remove newts who died
-    alive_newt = list(filter(lambda n: n.state != n.DEATH, myMap.newts_list))
+    alive_newt = list(filter(lambda n: n.state != n.DEATH, my_map.newts_list))
     if not alive_newt:
         print("aaa")
     for newt in alive_newt:
         row = newt.x
         col = newt.y
         # move aRnd board check
-        newt.step_change()
+        newt.step_change(my_map)
 
         row_moved = newt.x
         col_moved = newt.y
@@ -211,7 +211,7 @@ def reproduce_food(number):
                     print(f"Food was produced at ({x}, {y})")
 
     # add foods to map
-    myMap.add_food(food_positions)
+    my_map.add_food(food_positions)
     # show food left on the screen
     for row, col in food_positions:
         pygame.draw.rect(screen, COLOR_FOOD, (col, row, food_width, food_height))
