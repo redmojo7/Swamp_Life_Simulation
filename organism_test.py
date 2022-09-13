@@ -1,3 +1,5 @@
+
+import pandas as pd
 import numpy as np
 import shapely as shapely
 
@@ -165,3 +167,10 @@ with open("config/config.yml") as config_file:
     config = yaml.safe_load(config_file)
 print(config['window']['height'])
 print(config['window']['width'])
+np.set_printoptions(precision=0)
+food_cells = np.zeros((20, 20), dtype=int)
+
+#np.savetxt("foo.csv", food_cells, fmt="%0d", delimiter=",")
+
+df = pd.read_csv('foo.csv', sep=',', header=None)
+print(df.values)

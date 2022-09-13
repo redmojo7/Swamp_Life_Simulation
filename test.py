@@ -11,6 +11,7 @@
 #
 
 import numpy as np
+import pandas as pd
 import pygame
 import random
 import yaml
@@ -56,7 +57,7 @@ pygame.display.flip()
 pygame.display.update()
 
 # use current_gen as grid   np.zeros(row, col)
-# current_gen = np.zeros((HEIGHT, WIDTH), dtype=int)
+current_gen = np.zeros((HEIGHT, WIDTH), dtype=int)
 
 # create Map Object
 my_map = Map(WIDTH, HEIGHT)
@@ -141,7 +142,7 @@ my_map.add_creatures(shrimps)
 
 duck_img = pygame.image.load('png/duck2.png')
 duck_egg_img = pygame.image.load('png/duck_egg.png')
-newt_img = pygame.image.load('png/newt.png')
+newt_img = pygame.image.load('png/newt2.png')
 shrimp_img = pygame.image.load('png/shrimp.png')
 
 
@@ -178,6 +179,7 @@ def mountains_border_check(pos_x, pos_y, creature):
     [n_x, n_y] = min([t for t in my_map.mountains_borders],
                      key=lambda t: pow(t[0] - pos_x, 2) + pow(t[1] - pos_y, 2))
     #  if the rectangle area of passing through contains any mountain points
+    # (maybe few points, it is ok,like conor of triangle mountain)
     #  then wrong_way = Ture
     #    x,y-----------
     #    --------------
@@ -210,13 +212,26 @@ def mountains_border_check(pos_x, pos_y, creature):
         print(f"new position: {creature.x}, {creature.y}")
 
 
-def update_cell():
+def remove_died_creatures():
+    # remove ducks who died
+    my_map.ducks_list = list(filter(lambda d: d.state != d.DEATH, my_map.ducks_list))
+    # remove newts who died
+    my_map.newts_list = list(filter(lambda n: n.state != n.DEATH, my_map.newts_list))
+    # remove shrimps who died
+    my_map.shrimps_list = list(filter(lambda s: s.state != s.DEATH, my_map.shrimps_list))
+
+
+def next_generation():
     print("\n ### next generation ###")
     global generation
-    generation = generation + 1
+    generation += 1
     duck_info = my_font.render(f"Gen : {generation}", False, (0, 0, 0))
     screen.blit(duck_info, (int(0.9 * WIDTH), 0))
-    # next_gen = np.zeros((HEIGHT, WIDTH), dtype=int)
+    next_gen = np.zeros((HEIGHT, WIDTH), dtype=int)
+    
+    # remove died creatures
+    remove_died_creatures()
+    
     # for ducks
     update_cells_4_ducks()
     # for newts
@@ -224,7 +239,7 @@ def update_cell():
     # for shrimps
     update_cells_4_shrimps()
 
-    # return next_gen
+    return next_gen
 
 
 def update_cells_4_shrimps():
@@ -250,8 +265,6 @@ def update_cells_4_shrimps():
 
 
 def update_cells_4_newts():
-    # remove newts who died
-    my_map.newts_list = list(filter(lambda n: n.state != n.DEATH, my_map.newts_list))
     newt_info = my_font.render(f"newt : {len(my_map.newts_list)}", False, (0, 0, 0))
     screen.blit(newt_info, (int(0.9 * WIDTH), 25))
     if not my_map.newts_list:
@@ -280,8 +293,6 @@ def update_cells_4_ducks():
     for duck in mama_ducks:
         ducks.append(Duck(duck.egg))
         duck.egg = None  # remove from mama
-    # remove ducks who died
-    my_map.ducks_list = list(filter(lambda d: d.state != d.DEATH, my_map.ducks_list))
     duck_info = my_font.render(f"duck : {len(my_map.ducks_list)}", False, (0, 0, 0))
     screen.blit(duck_info, (int(0.9 * WIDTH), 15))
     for duck in my_map.ducks_list:
@@ -369,7 +380,7 @@ def draw_terrain():
                          [int(0.4 * WIDTH), int(0.25 * HEIGHT)]], 0)
     # print(f"mountains on land :\n{[350, 50]},{[250, 150]},{[450, 150]}")
 
-
+points = []
 while True:
     # Creates time delay of 10ms
     pygame.time.delay(800)
@@ -386,6 +397,9 @@ while True:
             running = False
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
             running = not running
+        elif event.type == pygame.MOUSEMOTION:
+            print()
+            #points.append(event.pos)
         if pygame.mouse.get_pos()[0]:
             pos = pygame.mouse.get_pos()
             print(f"mouse click at ({pos})")
@@ -398,12 +412,28 @@ while True:
         # completely fill the screen with initialing colour
         screen.fill(COLOR_LAND)
         draw_terrain()
-        update_cell()
+        current_gen = next_generation()
         #
         reproduce_food(25)
         # show terrain
 
+        RED = (255, 0, 0)
+        df = pd.read_csv('foo.csv', sep=',', header=None)
+        #if len(points) > 1:
+            #rect = pygame.draw.lines(screen, RED, True, points, 3)
+        '''
+        for i in range(df.shape[0]): #iterate over rows
+            for j in range(df.shape[1]): #iterate over columns
+                if df.at[i, j] == 0: #get cell value
+                    for x in range(i, i*20+1):
+                        for y in range(j, j*20+1):
+                            #pygame.draw.rect(screen, COLOR_FOOD, (x, y, 1, 1))
+                            #screen.set_at((x, y), COLOR_FOOD)
+        '''
+
         pygame.display.update()
+        #points.append(pygame.mouse.get_pos())
+        #print(f"***************** ({x}, {y})")
 
 # closes the pygame window
 pygame.quit()
