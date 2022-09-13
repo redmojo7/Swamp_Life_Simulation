@@ -13,6 +13,12 @@ from swamp import Duck, Shrimp, Newt
 from tools import is_inside, get_edge_points
 
 
+def remove_creatures(creatures, position):
+    x = position[0]
+    y = position[1]
+    return list(filter(lambda n: n.x != x and n.y != y, creatures))
+
+
 class Map:
     # list of Duck, Newt, and Shrimps
     ducks_list = []
@@ -33,6 +39,7 @@ class Map:
         self.height = height
         self.food_cells = np.zeros((height, width), dtype=int)
         self.mountains_cells = np.zeros((height, width), dtype=int)
+        self.lands_cells = np.zeros((height, width), dtype=int)
 
     def __str__(self):
         return f"Map {self.width}*{self.height} with {len(self.livings)} livings and {len(self.foods)} foods."
@@ -60,6 +67,10 @@ class Map:
         # get all points of border of all mountains (join two list by '+')
         self.mountains_borders += get_edge_points(x1, y1, x2, y2, x3, y3)
 
+    def set_lands(self, land_height):
+        for row in range(land_height):
+            for col in range(self.width):
+                self.lands_cells[row, col] = 1
 
     def add_creatures(self, creatures):
         for c in creatures:
@@ -71,24 +82,25 @@ class Map:
                 self.shrimps_list.append(c)
 
     def remove_newt(self, position):
-        x = position[0]
-        y = position[1]
-        self.newts_list = list(filter(lambda n: n.x != x and n.y != y, self.newts_list))
+        self.newts_list = remove_creatures(self.newts_list, position)
+
+    def remove_shrimps(self, position):
+        self.shrimps_list = remove_creatures(self.shrimps_list, position)
 
     def get_ducks_pos(self):
-        ducks = []
-        [ducks.append([duck.x, duck.y]) for duck in self.ducks_list]
-        return ducks
+        pos_list = []
+        [pos_list.append([duck.x, duck.y]) for duck in self.ducks_list]
+        return pos_list
 
     def get_newts_pos(self):
-        newts = []
-        [newts.append([newt.x, newt.y]) for newt in self.newts_list]
-        return newts
+        pos_list = []
+        [pos_list.append([newt.x, newt.y]) for newt in self.newts_list]
+        return pos_list
 
     def get_shrimps_pos(self):
-        shrimps = []
-        [shrimps.append([shrimp.x, shrimp.y]) for shrimp in self.shrimps_list]
-        return shrimps
+        pos_list = []
+        [pos_list.append([shrimp.x, shrimp.y]) for shrimp in self.shrimps_list]
+        return pos_list
 
     def get_ducks_cells(self):
         ducks_cells = np.zeros((self.height, self.width), dtype=int)

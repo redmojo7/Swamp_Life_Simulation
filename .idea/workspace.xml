@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a80f6687-70e5-4d93-96a1-8d94ba02ed85" name="Changes" comment="Add shrimp">
+    <list default="true" id="a80f6687-70e5-4d93-96a1-8d94ba02ed85" name="Changes" comment="Extract removing died creatures">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/organism_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/organism_test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/map.py" beforeDir="false" afterPath="$PROJECT_DIR$/map.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/swamp.py" beforeDir="false" afterPath="$PROJECT_DIR$/swamp.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -176,9 +177,9 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.test" />
+        <item itemvalue="Python.swamp (1)" />
         <item itemvalue="Python.organism_test" />
         <item itemvalue="Python.map_init" />
-        <item itemvalue="Python.swamp (1)" />
         <item itemvalue="Python.map" />
       </list>
     </recent_temporary>
@@ -304,7 +305,14 @@
       <option name="project" value="LOCAL" />
       <updated>1662820188843</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="Extract removing died creatures">
+      <created>1663072623625</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1663072623632</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -335,7 +343,8 @@
     <MESSAGE value="Add step_check and check the position after moving" />
     <MESSAGE value="Add config.yml and read config info from it" />
     <MESSAGE value="Add shrimp" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add shrimp" />
+    <MESSAGE value="Extract removing died creatures" />
+    <option name="LAST_COMMIT_MESSAGE" value="Extract removing died creatures" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

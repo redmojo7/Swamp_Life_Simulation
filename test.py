@@ -24,6 +24,7 @@ with open("config/config.yml") as config_file:
 
 HEIGHT = config['window']['height']
 WIDTH = config['window']['width']
+LAND_HEIGHT = int(HEIGHT / 3)
 
 COLOR_GRID = (40, 40, 40)
 COLOR_NEWT = (0, 255, 255)  # Cyan
@@ -93,7 +94,7 @@ print(f"Initialing mountains on land :\n"
 #
 #
 #
-#
+my_map.set_lands(LAND_HEIGHT)
 
 
 # return a random position [x,y]
@@ -112,7 +113,7 @@ def random_position_in_water():
     # keep away from the boarder, at least 10 points
     recreate = True
     while recreate:
-        [col, row] = [random.randint(0, WIDTH - 10), random.randint(int(HEIGHT / 3), HEIGHT - 10)]
+        [col, row] = [random.randint(0, WIDTH - 10), random.randint(LAND_HEIGHT, HEIGHT - 10)]
         # but not on the mountain
         if my_map.mountains_cells[row, col] == 0:
             recreate = False
@@ -162,9 +163,9 @@ def map_border_check(creature):
     if isinstance(creature, Duck) and creature.state == creature.ADULT and creature.y < 0:
         creature.y = 0
     # for Newt
-    if isinstance(creature, Shrimp) and creature.y < int(HEIGHT / 3):
+    if isinstance(creature, Shrimp) and creature.y < LAND_HEIGHT:
         # stay in water
-        creature.y = int(HEIGHT / 3)
+        creature.y = LAND_HEIGHT
 
 
 def step_check(pos_x, pos_y, creature):
@@ -357,10 +358,10 @@ running = True
 
 def draw_terrain():
     # Draws the sea and waves
-    pygame.draw.rect(screen, COLOR_SEA, [0, int(HEIGHT / 3), WIDTH, int(HEIGHT * 2 / 3)], 0)
+    pygame.draw.rect(screen, COLOR_SEA, [0, LAND_HEIGHT, WIDTH, int(HEIGHT * 2 / 3)], 0)
     for x_offset in range(0, WIDTH, 30):
-        pygame.draw.arc(screen, COLOR_WHITE, [0 + x_offset, int(HEIGHT / 3) - 10, 30, 30], PI / 2, PI, 12)
-        pygame.draw.arc(screen, COLOR_WHITE, [0 + x_offset, int(HEIGHT / 3) - 10, 30, 30], 0, PI / 2, 12)
+        pygame.draw.arc(screen, COLOR_WHITE, [0 + x_offset, LAND_HEIGHT - 10, 30, 30], PI / 2, PI, 12)
+        pygame.draw.arc(screen, COLOR_WHITE, [0 + x_offset, LAND_HEIGHT - 10, 30, 30], 0, PI / 2, 12)
 
     # Draws mountains in sea (zoom out mountains for 20 points for each side)
     # triangle ([x1, y1+20], [x2+20, y2-20], [x3-20, y3-20]])
