@@ -1,3 +1,9 @@
+creatures:
+  duck: 10
+  newt: 15
+  shrimp: 30
+generation: 4
+need_restore: True
 window:
   height: 500
   width: 1000

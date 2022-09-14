@@ -85,8 +85,6 @@ class Creature(object):  #
         else:
             self.y -= moved_cell_y
 
-
-
     def random_run_x(self):
         self.x += random.choice([-abs(self.velocity), 0, self.velocity])
 
@@ -195,8 +193,22 @@ class Creature(object):  #
         else:
             self.move_to_target(food_pos)
 
+    def in_water(self, my_map):
+        # my_map.lands_cells[row, col] == 0
+        return my_map.lands_cells[self.y, self.x] == 0
+
+    def get_size(self):
+        return self.size
+
+    def set_attributes(self, age, state, size, velocity):
+        self.age = age
+        self.state = state
+        self.size = size
+        self.velocity = velocity
+
 
 class Duck(Creature):
+    name = "Duck"
     TIME_2_HATCH = 4
     TIME_2_LAY_EGG = 10
     TIME_2_AGED = 15
@@ -218,7 +230,7 @@ class Duck(Creature):
 
     def step_change(self, my_map):
         # change age, state, velocity, ect...
-        self.change_status()
+        self.change_status(my_map)
         if self.state == self.ADULT:
             # before moving, check if there are some newts or shrimps around * points (it depends on vision)
             # if self.saw_alive_newts(my_map):
@@ -233,7 +245,7 @@ class Duck(Creature):
                 else:  # don't found any newts or shrimps
                     super().random_run()  # Call parent step_change
 
-    def change_status(self):
+    def change_status(self, my_map):
         self.age += 1
         if self.state == self.EGG and self.age >= self.TIME_2_HATCH:  # ready to HATCH
             self.state = self.ADULT
@@ -247,12 +259,10 @@ class Duck(Creature):
         # Ducks can run around 6-8 miles per hour
         # Ducks can swim up to 6 miles per hour
         # Is the duck on land?
-        '''
-        if [self.x, self.y] in self.map.land:
-            self.velocity = self.VELOCITY_RUNNING
-        else:
+        if self.in_water(my_map):
             self.velocity = self.VELOCITY_SWIMMING
-        '''
+        else:
+            self.velocity = self.VELOCITY_RUNNING
 
     def get_size(self):
         if self.state == "egg":
@@ -264,6 +274,7 @@ class Duck(Creature):
 
 class Newt(Creature):
     time_2_death = 80
+    name = "Newt"
 
     def __init__(self, pos):
         super().__init__(pos)  # Call parent __init__
@@ -300,6 +311,7 @@ class Newt(Creature):
 
 class Shrimp(Creature):
     time_2_death = 50
+    name = "Shrimp"
 
     def __init__(self, pos):
         super().__init__(pos)  # Call parent __init__
@@ -318,7 +330,7 @@ class Shrimp(Creature):
             self.state = self.DEATH
         if self.state == "Shrimp":
             # before moving, check if there are some Duck around * points (it depends on vision)
-            predictor_pos = self.search_nearst_target(my_map.get_ducks_pos()+my_map.get_newts_pos())
+            predictor_pos = self.search_nearst_target(my_map.get_ducks_pos() + my_map.get_newts_pos())
             if predictor_pos:
                 self.move_away_from(predictor_pos)
             else:

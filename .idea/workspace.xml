@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a80f6687-70e5-4d93-96a1-8d94ba02ed85" name="Changes" comment="Move away from predictor for newts and shrimps">
+    <list default="true" id="a80f6687-70e5-4d93-96a1-8d94ba02ed85" name="Changes" comment="50% of chance it wants to eat some foods">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/config/config.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/organism_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/organism_test.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/swamp.py" beforeDir="false" afterPath="$PROJECT_DIR$/swamp.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,7 +49,7 @@
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.test">
+  <component name="RunManager" selected="Python.test_interact_with_food">
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="Swamp_Life_Simulation" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -175,10 +178,10 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.test" />
         <item itemvalue="Python.test_interact_with_food" />
-        <item itemvalue="Python.swamp (1)" />
+        <item itemvalue="Python.test" />
         <item itemvalue="Python.organism_test" />
+        <item itemvalue="Python.swamp (1)" />
         <item itemvalue="Python.map_init" />
       </list>
     </recent_temporary>
@@ -332,7 +335,14 @@
       <option name="project" value="LOCAL" />
       <updated>1663158380169</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="50% of chance it wants to eat some foods">
+      <created>1663159163894</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1663159163894</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -367,7 +377,8 @@
     <MESSAGE value="Set land for map; Duck can eat newts and shrimps" />
     <MESSAGE value="Newts can eat shrimps, and shrimps can eat foods" />
     <MESSAGE value="Move away from predictor for newts and shrimps" />
-    <option name="LAST_COMMIT_MESSAGE" value="Move away from predictor for newts and shrimps" />
+    <MESSAGE value="50% of chance it wants to eat some foods" />
+    <option name="LAST_COMMIT_MESSAGE" value="50% of chance it wants to eat some foods" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -379,18 +390,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/organism_test.py</url>
-          <line>100</line>
+          <line>101</line>
           <option name="timeStamp" value="45" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/organism_test.py</url>
-          <line>96</line>
-          <option name="timeStamp" value="46" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/organism_test.py</url>
-          <line>92</line>
-          <option name="timeStamp" value="47" />
+          <line>182</line>
+          <option name="timeStamp" value="56" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

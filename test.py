@@ -9,6 +9,7 @@
 #
 # 12/4/21 – Base version for assignment
 #
+import csv
 
 import numpy as np
 import pandas as pd
@@ -19,11 +20,19 @@ import yaml
 from map import Map
 from swamp import Duck, Shrimp, Newt
 
-with open("config/config.yml") as config_file:
+config_yaml = "config/config.yml"
+creatures_csv = 'creatures.csv'
+with open(config_yaml, 'r') as config_file:
     config = yaml.safe_load(config_file)
 
 HEIGHT = config['window']['height']
 WIDTH = config['window']['width']
+NUM_DUCK = config['creatures']['duck']
+NUM_NEWT = config['creatures']['newt']
+NUM_SHRIMP = config['creatures']['shrimp']
+
+need_restore = config['need_restore']
+
 LAND_HEIGHT = int(HEIGHT / 3)
 
 COLOR_GRID = (40, 40, 40)
@@ -123,19 +132,42 @@ def random_position_in_water():
 ducks = []
 newts = []
 shrimps = []
-# Initialing duck population
-for i in range(10):
-    ducks.append(Duck(random_position()))
-    print(ducks[i])
 
-# Initialing newt population
-for i in range(10):
-    newts.append(Newt(random_position_in_water()))
-    print(newts[i])
+if need_restore is True:
+    print(f"Restore creatures from file {creatures_csv}")
+    with open(creatures_csv) as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter=',')
+        for row in csv_reader:
+            if row[0] == Duck.name:
+                d = Duck([row[5], row[6]])
+                d.set_attributes(row[1], row[2], row[3], row[4])
+                print(f"Restore duck info for {d}")
+                ducks.append(d)
+            elif row[0] == Newt.name:
+                n = Newt([row[5], row[6]])
+                n.set_attributes(row[1], row[2], row[3], row[4])
+                print(f"Restore newt info for {n}")
+                newts.append(n)
+            elif row[0] == Shrimp.name:
+                s = Shrimp([row[5], row[6]])
+                s.set_attributes(row[1], row[2], row[3], row[4])
+                print(f"Restore shrimp info for {s}")
+                shrimps.append(s)
 
-for i in range(20):
-    shrimps.append(Shrimp(random_position_in_water()))
-    print(shrimps[i])
+else:
+    # Initialing duck population
+    for i in range(NUM_DUCK):
+        ducks.append(Duck(random_position()))
+        print(ducks[i])
+
+    # Initialing newt population
+    for i in range(NUM_NEWT):
+        newts.append(Newt(random_position_in_water()))
+        print(newts[i])
+
+    for i in range(NUM_SHRIMP):
+        shrimps.append(Shrimp(random_position_in_water()))
+        print(shrimps[i])
 
 my_map.add_creatures(ducks)
 my_map.add_creatures(newts)
@@ -229,10 +261,10 @@ def next_generation():
     duck_info = my_font.render(f"Gen : {generation}", False, (0, 0, 0))
     screen.blit(duck_info, (int(0.9 * WIDTH), 0))
     next_gen = np.zeros((HEIGHT, WIDTH), dtype=int)
-    
+
     # remove died creatures
     remove_died_creatures()
-    
+
     # for ducks
     update_cells_4_ducks()
     # for newts
@@ -381,6 +413,7 @@ def draw_terrain():
                          [int(0.4 * WIDTH), int(0.25 * HEIGHT)]], 0)
     # print(f"mountains on land :\n{[350, 50]},{[250, 150]},{[450, 150]}")
 
+
 points = []
 while True:
     # Creates time delay of 10ms
@@ -400,7 +433,7 @@ while True:
             running = not running
         elif event.type == pygame.MOUSEMOTION:
             print()
-            #points.append(event.pos)
+            # points.append(event.pos)
         if pygame.mouse.get_pos()[0]:
             pos = pygame.mouse.get_pos()
             print(f"mouse click at ({pos})")
@@ -418,10 +451,22 @@ while True:
         reproduce_food(25)
         # show terrain
 
-        RED = (255, 0, 0)
-        df = pd.read_csv('foo.csv', sep=',', header=None)
-        #if len(points) > 1:
-            #rect = pygame.draw.lines(screen, RED, True, points, 3)
+        # save app states
+        # save generation
+        if config:
+            config['generation'] = generation
+            with open(config_yaml, 'w') as config_file:
+                yaml.safe_dump(config, config_file)  # Also note the safe_dump
+        # save all creatures status
+        with open(creatures_csv, 'w', newline='') as f:
+            writer = csv.writer(f)
+            for d in my_map.ducks_list + my_map.newts_list + my_map.shrimps_list:
+                writer.writerow([d.name, d.age, d.state, d.get_size(), d.velocity, d.x, d.y])
+
+        # RED = (255, 0, 0)
+        # df = pd.read_csv('foo.csv', sep=',', header=None)
+        # if len(points) > 1:
+        # rect = pygame.draw.lines(screen, RED, True, points, 3)
         '''
         for i in range(df.shape[0]): #iterate over rows
             for j in range(df.shape[1]): #iterate over columns
@@ -433,8 +478,8 @@ while True:
         '''
 
         pygame.display.update()
-        #points.append(pygame.mouse.get_pos())
-        #print(f"***************** ({x}, {y})")
+        # points.append(pygame.mouse.get_pos())
+        # print(f"***************** ({x}, {y})")
 
 # closes the pygame window
 pygame.quit()
