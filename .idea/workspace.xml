@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a80f6687-70e5-4d93-96a1-8d94ba02ed85" name="Changes" comment="Newts can eat shrimps, and shrimps can eat foods">
-      <change afterPath="$PROJECT_DIR$/test/test_interact_with_food.py" afterDir="false" />
+    <list default="true" id="a80f6687-70e5-4d93-96a1-8d94ba02ed85" name="Changes" comment="Move away from predictor for newts and shrimps">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/swamp.py" beforeDir="false" afterPath="$PROJECT_DIR$/swamp.py" afterDir="false" />
     </list>
@@ -47,7 +46,7 @@
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.test_interact_with_food">
+  <component name="RunManager" selected="Python.test">
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="Swamp_Life_Simulation" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -176,8 +175,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.test_interact_with_food" />
         <item itemvalue="Python.test" />
+        <item itemvalue="Python.test_interact_with_food" />
         <item itemvalue="Python.swamp (1)" />
         <item itemvalue="Python.organism_test" />
         <item itemvalue="Python.map_init" />
@@ -326,7 +325,14 @@
       <option name="project" value="LOCAL" />
       <updated>1663155746055</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="Move away from predictor for newts and shrimps">
+      <created>1663158380169</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1663158380169</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -360,7 +366,8 @@
     <MESSAGE value="Extract removing died creatures" />
     <MESSAGE value="Set land for map; Duck can eat newts and shrimps" />
     <MESSAGE value="Newts can eat shrimps, and shrimps can eat foods" />
-    <option name="LAST_COMMIT_MESSAGE" value="Newts can eat shrimps, and shrimps can eat foods" />
+    <MESSAGE value="Move away from predictor for newts and shrimps" />
+    <option name="LAST_COMMIT_MESSAGE" value="Move away from predictor for newts and shrimps" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
