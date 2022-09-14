@@ -87,6 +87,11 @@ class Map:
     def remove_shrimps(self, position):
         self.shrimps_list = remove_creatures(self.shrimps_list, position)
 
+    def remove_foods(self, position):
+        self.foods.remove(position)
+        # self.food_cells[row, col] = 0
+        self.food_cells[position[1], position[0]] = 0
+
     def get_ducks_pos(self):
         pos_list = []
         [pos_list.append([duck.x, duck.y]) for duck in self.ducks_list]
@@ -101,6 +106,9 @@ class Map:
         pos_list = []
         [pos_list.append([shrimp.x, shrimp.y]) for shrimp in self.shrimps_list]
         return pos_list
+
+    def get_foods_pos(self):
+        return self.foods
 
     def get_ducks_cells(self):
         ducks_cells = np.zeros((self.height, self.width), dtype=int)

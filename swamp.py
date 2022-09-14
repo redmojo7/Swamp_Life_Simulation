@@ -99,7 +99,7 @@ class Creature(object):  #
             else:
                 self.move_to_target(food)
         else:
-            # there is no food, then random running
+            # if there is no food around, then random running
             self.random_run()
 
     def is_same_position(self, position):
@@ -121,6 +121,63 @@ class Creature(object):  #
         else:
             return None
 
+    def under_one_step(self, position):
+        return manhattan_distance([self.x, self.y], position) <= self.velocity
+
+    # eat a newt
+    def eat_newt(self, my_map, newt_pos):
+        print(f"{self} is eating newts @ {newt_pos}")
+        my_map.remove_newt(newt_pos)
+
+    # eat a shrimp
+    def eat_shrimp(self, my_map, shrimp_pos):
+        print(f"{self} is eating shrimp @ {shrimp_pos}")
+        my_map.remove_shrimps(shrimp_pos)
+
+    # eat a food
+    def eat_food(self, my_map, food_pos):
+        print(f"{self} is eating food @ {food_pos}")
+        my_map.remove_foods(food_pos)
+
+    def track_newts(self, my_map, newt_pos):
+        # move forward to newts
+        print(f"Newt was found! @ ({newt_pos}) by {self}")
+        # if the distance is under a velocity?
+        if self.under_one_step(newt_pos):
+            # move to target and eat it
+            self.x = newt_pos[0]
+            self.y = newt_pos[1]
+            self.eat_newt(my_map, newt_pos)
+            self.time_2_death += 15  # live longer
+        else:
+            self.move_to_target(newt_pos)
+
+    def track_shrimp(self, my_map, shrimp_pos):
+        # move forward to newts
+        print(f"Shrimp was found! @ ({shrimp_pos}) by {self}")
+        # if the distance is under a velocity?
+        if self.under_one_step(shrimp_pos):
+            # move to target and eat it
+            self.x = shrimp_pos[0]
+            self.y = shrimp_pos[1]
+            self.eat_shrimp(my_map, shrimp_pos)
+            self.time_2_death += 10  # live longer
+        else:
+            self.move_to_target(shrimp_pos)
+
+    def track_food(self, my_map, food_pos):
+        # move forward to newts
+        print(f"Food was found! @ ({food_pos}) by {self}")
+        # if the distance is under a velocity?
+        if self.under_one_step(food_pos):
+            # move to target and eat it
+            self.x = food_pos[0]
+            self.y = food_pos[1]
+            self.eat_food(my_map, food_pos)
+            self.time_2_death += 5  # live longer
+        else:
+            self.move_to_target(food_pos)
+
 
 class Duck(Creature):
     TIME_2_HATCH = 4
@@ -141,9 +198,6 @@ class Duck(Creature):
 
     def __str__(self):
         return f"{self.state} Duck aged {self.age} @ ({self.x},{self.y})"
-
-    def under_one_step(self, position):
-        return manhattan_distance([self.x, self.y], position) <= self.velocity
 
     def step_change(self, my_map):
         # change age, state, velocity, ect...
@@ -189,44 +243,9 @@ class Duck(Creature):
             size = 25
         return size
 
-    # eat a newt
-    def eat_newt(self, my_map, newt_pos):
-        print(f"{self} is eating newts @ {newt_pos}")
-        my_map.remove_newt(newt_pos)
-
-    def eat_shrimp_pos(self, my_map, shrimp_pos):
-        print(f"{self} is eating shrimp @ {shrimp_pos}")
-        my_map.remove_shrimps(shrimp_pos)
-
-    def track_newts(self, my_map, newt_pos):
-        # move forward to newts
-        print(f"Newt was found! @ ({newt_pos}) by {self}")
-        # if the distance is under a velocity?
-        if self.under_one_step(newt_pos):
-            # move to target and eat it
-            self.x = newt_pos[0]
-            self.y = newt_pos[1]
-            self.eat_newt(my_map, newt_pos)
-            self.time_2_death += 10  # live longer
-        else:
-            self.move_to_target(newt_pos)
-
-    def track_shrimp(self, my_map, shrimp_pos):
-        # move forward to newts
-        print(f"Shrimp was found! @ ({shrimp_pos}) by {self}")
-        # if the distance is under a velocity?
-        if self.under_one_step(shrimp_pos):
-            # move to target and eat it
-            self.x = shrimp_pos[0]
-            self.y = shrimp_pos[1]
-            self.eat_shrimp_pos(my_map, shrimp_pos)
-            self.time_2_death += 5  # live longer
-        else:
-            self.move_to_target(shrimp_pos)
-
 
 class Newt(Creature):
-    TIME_2_DEATH = 80
+    time_2_death = 80
 
     def __init__(self, pos):
         super().__init__(pos)  # Call parent __init__
@@ -239,17 +258,24 @@ class Newt(Creature):
         return f"Newt aged {self.age} @ ({self.x},{self.y}) with velocity"
 
     def step_change(self, my_map):
+        # change age, state, velocity, ect...
         self.age += 1
-        if self.age > self.TIME_2_DEATH:  # death
+        if self.age > self.time_2_death:  # death
             self.state = self.DEATH
-        super().step_change(my_map)
+        if self.state == "Newt":
+            # before moving, check if there are some shrimps around * points (it depends on vision)
+            shrimp_pos = self.search_nearst_target(my_map.get_shrimps_pos())
+            if shrimp_pos:
+                self.track_shrimp(my_map, shrimp_pos)
+            else:  # don't found any newts or shrimps
+                super().random_run()  # Call parent step_change
 
     def get_size(self):
         return self.size
 
 
 class Shrimp(Creature):
-    TIME_2_DEATH = 50
+    time_2_death = 50
 
     def __init__(self, pos):
         super().__init__(pos)  # Call parent __init__
@@ -262,10 +288,17 @@ class Shrimp(Creature):
         return f"Shrimp aged {self.age} @ ({self.x},{self.y})"
 
     def step_change(self, my_map):
+        # change age, state, velocity, ect...
         self.age += 1
-        if self.age > self.TIME_2_DEATH:  # death
+        if self.age > self.time_2_death:  # death
             self.state = self.DEATH
-        super().step_change(my_map)
+        if self.state == "Shrimp":
+            # before moving, check if there are some foods around * points (it depends on vision)
+            food_pos = self.search_nearst_target(my_map.get_foods_pos())
+            if food_pos:
+                self.track_foods(my_map, food_pos)
+            else:  # don't found any newts or shrimps
+                super().random_run()  # Call parent step_change
 
     def get_size(self):
         return self.size

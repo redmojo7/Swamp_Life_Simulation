@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a80f6687-70e5-4d93-96a1-8d94ba02ed85" name="Changes" comment="Extract removing died creatures">
+    <list default="true" id="a80f6687-70e5-4d93-96a1-8d94ba02ed85" name="Changes" comment="Set land for map; Duck can eat newts and shrimps">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/map.py" beforeDir="false" afterPath="$PROJECT_DIR$/map.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/organism_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/organism_test.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/swamp.py" beforeDir="false" afterPath="$PROJECT_DIR$/swamp.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -312,7 +312,14 @@
       <option name="project" value="LOCAL" />
       <updated>1663072623632</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="Set land for map; Duck can eat newts and shrimps">
+      <created>1663078413843</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1663078413843</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -344,7 +351,8 @@
     <MESSAGE value="Add config.yml and read config info from it" />
     <MESSAGE value="Add shrimp" />
     <MESSAGE value="Extract removing died creatures" />
-    <option name="LAST_COMMIT_MESSAGE" value="Extract removing died creatures" />
+    <MESSAGE value="Set land for map; Duck can eat newts and shrimps" />
+    <option name="LAST_COMMIT_MESSAGE" value="Set land for map; Duck can eat newts and shrimps" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
