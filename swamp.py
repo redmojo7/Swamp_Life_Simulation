@@ -70,6 +70,23 @@ class Creature(object):  #
         # change position for x
         self.x = x_moved
 
+    def move_away_from(self, pos):
+        print(f"{self} move away from {pos}")
+        moved_cell_x = random.randint(0, self.velocity)
+        moved_cell_y = self.velocity - moved_cell_x
+        #
+        if self.x - pos[0] > 0:
+            self.x += moved_cell_x
+        else:
+            self.x -= moved_cell_x
+        #
+        if self.y - pos[1] > 0:
+            self.y += moved_cell_y
+        else:
+            self.y -= moved_cell_y
+
+
+
     def random_run_x(self):
         self.x += random.choice([-abs(self.velocity), 0, self.velocity])
 
@@ -255,7 +272,7 @@ class Newt(Creature):
         self.vision = 150  # can see food from max 40 points away
 
     def __str__(self):
-        return f"Newt aged {self.age} @ ({self.x},{self.y}) with velocity"
+        return f"Newt aged {self.age} @ ({self.x},{self.y})"
 
     def step_change(self, my_map):
         # change age, state, velocity, ect...
@@ -263,12 +280,17 @@ class Newt(Creature):
         if self.age > self.time_2_death:  # death
             self.state = self.DEATH
         if self.state == "Newt":
-            # before moving, check if there are some shrimps around * points (it depends on vision)
-            shrimp_pos = self.search_nearst_target(my_map.get_shrimps_pos())
-            if shrimp_pos:
-                self.track_shrimp(my_map, shrimp_pos)
-            else:  # don't found any newts or shrimps
-                super().random_run()  # Call parent step_change
+            # before moving, check if there are some Duck around * points (it depends on vision)
+            duck_pos = self.search_nearst_target(my_map.get_ducks_pos())
+            if duck_pos:
+                self.move_away_from(duck_pos)
+            else:
+                # check if there are some shrimps around * points (it depends on vision)
+                shrimp_pos = self.search_nearst_target(my_map.get_shrimps_pos())
+                if shrimp_pos:
+                    self.track_shrimp(my_map, shrimp_pos)
+                else:  # don't found any newts or shrimps
+                    super().random_run()  # Call parent step_change
 
     def get_size(self):
         return self.size
@@ -293,12 +315,17 @@ class Shrimp(Creature):
         if self.age > self.time_2_death:  # death
             self.state = self.DEATH
         if self.state == "Shrimp":
-            # before moving, check if there are some foods around * points (it depends on vision)
-            food_pos = self.search_nearst_target(my_map.get_foods_pos())
-            if food_pos:
-                self.track_foods(my_map, food_pos)
-            else:  # don't found any newts or shrimps
-                super().random_run()  # Call parent step_change
+            # before moving, check if there are some Duck around * points (it depends on vision)
+            predictor_pos = self.search_nearst_target(my_map.get_ducks_pos()+my_map.get_newts_pos())
+            if predictor_pos:
+                self.move_away_from(predictor_pos)
+            else:
+                # before moving, check if there are some foods around * points (it depends on vision)
+                food_pos = self.search_nearst_target(my_map.get_foods_pos())
+                if food_pos:
+                    self.track_foods(my_map, food_pos)
+                else:  # don't found any newts or shrimps
+                    super().random_run()  # Call parent step_change
 
     def get_size(self):
         return self.size
