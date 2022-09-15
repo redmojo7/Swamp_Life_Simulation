@@ -21,8 +21,8 @@ class Creature(object):  #
     def __init__(self, pos):
         self.velocity = None
         self.vision = None
-        self.x = pos[0]
-        self.y = pos[1]
+        self.x = int(pos[0])
+        self.y = int(pos[1])
         self.age = 0
 
     # target is array [x,y]
@@ -35,14 +35,11 @@ class Creature(object):  #
             return
         if self.x == target[0]:
             # move on y
-            print("move on y")
             self.move_to_target_y(target)
         elif self.y == target[1]:
             # move on y
-            print("move on x")
             self.move_to_target_x(target)
         else:
-            print("move on x or y")
             if random.random() > 0.5:
                 self.move_to_target_x(target)
             else:
@@ -85,20 +82,13 @@ class Creature(object):  #
         else:
             self.y -= moved_cell_y
 
-    def random_run_x(self):
-        self.x += random.choice([-abs(self.velocity), 0, self.velocity])
-
-    def random_run_y(self):
-        self.y += random.choice([-abs(self.velocity), 0, self.velocity])
-
-    # random run
+    # random run(max is velocity, total distance(Manhattan) on x and y)
     def random_run(self):
-        if random.random() < 0.5:
-            print("Random running on x")
-            self.random_run_x()
-        else:
-            self.random_run_y()
-            print("Random running on y")
+        moved_cells_x = random.randint(-self.velocity, self.velocity)
+        left_steps = self.velocity - abs(moved_cells_x)
+        moved_cells_y = random.randint(-left_steps, left_steps)
+        self.x += moved_cells_x
+        self.y += moved_cells_y
 
     def step_change(self, my_map):
         # before moving, check if there are some food around ** points (it depends on vision)
@@ -107,7 +97,7 @@ class Creature(object):  #
             # https://github.com/Rabbid76/PyGameExamplesAndAnswers/blob/master/documentation/pygame/pygame_math_vector_and_reflection.md
             food = min([f for f in my_map.foods], key=lambda f: pow(f[0] - self.x, 2) + pow(f[1] - self.y, 2))
             # move forward to food
-            print(f"Food was found! @ ({food[0]},{food[1]})")
+            print(f"Food was found! @ ({food[0]},{food[1]}) by {self}")
             if food[0] == self.x and food[1] == self.y:
                 my_map.eat_food(food)
                 self.age -= 3
@@ -201,10 +191,10 @@ class Creature(object):  #
         return self.size
 
     def set_attributes(self, age, state, size, velocity):
-        self.age = age
+        self.age = int(age)
         self.state = state
-        self.size = size
-        self.velocity = velocity
+        self.size = int(size)
+        self.velocity = int(velocity)
 
 
 class Duck(Creature):

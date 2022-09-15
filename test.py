@@ -21,7 +21,7 @@ from map import Map
 from swamp import Duck, Shrimp, Newt
 
 config_yaml = "config/config.yml"
-creatures_csv = 'creatures.csv'
+creatures_csv = 'output/creatures.csv'
 with open(config_yaml, 'r') as config_file:
     config = yaml.safe_load(config_file)
 
@@ -141,17 +141,17 @@ if need_restore is True:
             if row[0] == Duck.name:
                 d = Duck([row[5], row[6]])
                 d.set_attributes(row[1], row[2], row[3], row[4])
-                print(f"Restore duck info for {d}")
+                print(f"Restore duck for {d}")
                 ducks.append(d)
             elif row[0] == Newt.name:
                 n = Newt([row[5], row[6]])
                 n.set_attributes(row[1], row[2], row[3], row[4])
-                print(f"Restore newt info for {n}")
+                print(f"Restore newt for {n}")
                 newts.append(n)
             elif row[0] == Shrimp.name:
                 s = Shrimp([row[5], row[6]])
                 s.set_attributes(row[1], row[2], row[3], row[4])
-                print(f"Restore shrimp info for {s}")
+                print(f"Restore shrimp for {s}")
                 shrimps.append(s)
 
 else:
@@ -162,7 +162,7 @@ else:
 
     # Initialing newt population
     for i in range(NUM_NEWT):
-        newts.append(Newt(random_position_in_water()))
+        newts.append(Newt(random_position()))
         print(newts[i])
 
     for i in range(NUM_SHRIMP):

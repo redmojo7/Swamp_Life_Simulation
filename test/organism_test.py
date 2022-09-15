@@ -2,7 +2,6 @@ import csv
 
 import pandas as pd
 import numpy as np
-import shapely as shapely
 
 from swamp import Duck, Shrimp
 from map import Map
@@ -164,7 +163,7 @@ x, y = data.T
 #plt.show()
 
 import yaml
-with open("config/config.yml") as config_file:
+with open("../config/config.yml") as config_file:
     config = yaml.safe_load(config_file)
 print(config['window']['height'])
 print(config['window']['width'])
@@ -173,10 +172,10 @@ food_cells = np.zeros((20, 20), dtype=int)
 
 #np.savetxt("foo.csv", food_cells, fmt="%0d", delimiter=",")
 
-df = pd.read_csv('foo.csv', sep=',', header=None)
+df = pd.read_csv('../foo.csv', sep=',', header=None)
 print(df.values)
 
-with open('creatures.csv') as csv_file:
+with open('../output/creatures.csv') as csv_file:
     csv_reader = csv.reader(csv_file, delimiter=',')
     line_count = 0
     for row in csv_reader:
