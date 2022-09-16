@@ -9,6 +9,8 @@
 #
 # 12/4/21 – Base version for assignment
 #
+import csv
+import os
 
 import numpy as np
 import pandas as pd
@@ -19,11 +21,19 @@ import yaml
 from map import Map
 from swamp import Duck, Shrimp, Newt
 
-with open("../config/config.yml") as config_file:
+config_yaml = f"{os.path.abspath(os.path.dirname(os.getcwd()))}/config/config.yml"
+creatures_csv = f'{os.path.abspath(os.path.dirname(os.getcwd()))}/output/creatures.csv'
+with open(config_yaml, 'r') as config_file:
     config = yaml.safe_load(config_file)
 
 HEIGHT = config['window']['height']
 WIDTH = config['window']['width']
+NUM_DUCK = config['creatures']['duck']
+NUM_NEWT = config['creatures']['newt']
+NUM_SHRIMP = config['creatures']['shrimp']
+
+need_restore = config['need_restore']
+
 LAND_HEIGHT = int(HEIGHT / 3)
 
 COLOR_GRID = (40, 40, 40)
@@ -123,19 +133,42 @@ def random_position_in_water():
 ducks = []
 newts = []
 shrimps = []
-# Initialing duck population
-for i in range(0):
-    ducks.append(Duck(random_position()))
-    print(ducks[i])
 
-# Initialing newt population
-for i in range(1):
-    newts.append(Newt(random_position_in_water()))
-    print(newts[i])
+if need_restore is True:
+    print(f"Restore creatures from file {creatures_csv}")
+    with open(creatures_csv) as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter=',')
+        for row in csv_reader:
+            if row[0] == Duck.name:
+                d = Duck([row[5], row[6]])
+                d.set_attributes(row[1], row[2], row[3], row[4])
+                print(f"Restore duck for {d}")
+                ducks.append(d)
+            elif row[0] == Newt.name:
+                n = Newt([row[5], row[6]])
+                n.set_attributes(row[1], row[2], row[3], row[4])
+                print(f"Restore newt for {n}")
+                newts.append(n)
+            elif row[0] == Shrimp.name:
+                s = Shrimp([row[5], row[6]])
+                s.set_attributes(row[1], row[2], row[3], row[4])
+                print(f"Restore shrimp for {s}")
+                shrimps.append(s)
 
-for i in range(0):
-    shrimps.append(Shrimp(random_position_in_water()))
-    print(shrimps[i])
+else:
+    # Initialing duck population
+    for i in range(NUM_DUCK):
+        ducks.append(Duck(random_position()))
+        print(ducks[i])
+
+    # Initialing newt population
+    for i in range(NUM_NEWT):
+        newts.append(Newt(random_position()))
+        print(newts[i])
+
+    for i in range(NUM_SHRIMP):
+        shrimps.append(Shrimp(random_position_in_water()))
+        print(shrimps[i])
 
 my_map.add_creatures(ducks)
 my_map.add_creatures(newts)
@@ -160,7 +193,7 @@ def map_border_check(creature):
         creature.y = HEIGHT - creature.get_size()
     # check top boarder for each differently
     # for Duck
-    if isinstance(creature, Duck) and creature.state == creature.ADULT and creature.y < 0:
+    if (isinstance(creature, Duck) or isinstance(creature, Newt)) and creature.y < 0:
         creature.y = 0
     # for Newt
     if isinstance(creature, Shrimp) and creature.y < LAND_HEIGHT:
@@ -406,14 +439,14 @@ while True:
             print(f"mouse click at ({pos})")
 
             # mouse as a duck
-            my_map.ducks_list = []
-            duck = Duck(pos)
-            duck.age = 5
-            my_map.add_creatures([duck])
+            #my_map.ducks_list = []
+            #duck = Duck(pos)
+            #duck.age = 5
+            #my_map.add_creatures([duck])
 
             # mouse as a newt
-            #my_map.newts_list = []
-            #my_map.add_creatures([Newt(pos)])
+            my_map.newts_list = []
+            my_map.add_creatures([Newt(pos)])
 
             # mouse as a shrimp
             #my_map.shrimps_list = []

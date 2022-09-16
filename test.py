@@ -192,7 +192,7 @@ def map_border_check(creature):
         creature.y = HEIGHT - creature.get_size()
     # check top boarder for each differently
     # for Duck
-    if isinstance(creature, Duck) and creature.state == creature.ADULT and creature.y < 0:
+    if (isinstance(creature, Duck) or isinstance(creature, Newt)) and creature.y < 0:
         creature.y = 0
     # for Newt
     if isinstance(creature, Shrimp) and creature.y < LAND_HEIGHT:

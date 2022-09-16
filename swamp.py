@@ -12,7 +12,7 @@ import random
 
 import numpy as np
 
-from tools import manhattan_distance
+from tools import manhattan_distance, trace
 
 
 class Creature(object):  #
@@ -27,45 +27,10 @@ class Creature(object):  #
 
     # target is array [x,y]
     def move_to_target(self, target):
-        print(f"Move to target ({target[0]},{target[1]})")
-        if self.under_one_step(target):
-            # move to target directly
-            self.x = target[0]
-            self.y = target[1]
-            return
-        if self.x == target[0]:
-            # move on y
-            self.move_to_target_y(target)
-        elif self.y == target[1]:
-            # move on y
-            self.move_to_target_x(target)
-        else:
-            if random.random() > 0.5:
-                self.move_to_target_x(target)
-            else:
-                self.move_to_target_y(target)
-
-    def move_to_target_y(self, target):
-        if abs(self.y - target[1]) > self.velocity:  # farther than a velocity
-            if (self.y - target[1]) > 0:
-                y_moved = self.y - self.velocity
-            else:
-                y_moved = self.y + self.velocity
-        else:
-            y_moved = target[1]
-        # change position for y
-        self.y = y_moved
-
-    def move_to_target_x(self, target):
-        if abs(self.x - target[0]) > self.velocity:  # farther than a velocity
-            if (self.x - target[0]) > 0:
-                x_moved = self.x - self.velocity
-            else:
-                x_moved = self.x + self.velocity
-        else:
-            x_moved = target[0]
-        # change position for x
-        self.x = x_moved
+        print(f"{self} Move to target ({target[0]},{target[1]})")
+        tracer = trace(target, [self.x, self.y], self.velocity)
+        self.x = tracer[0]
+        self.y = tracer[1]
 
     def move_away_from(self, pos):
         print(f"{self} move away from {pos}")

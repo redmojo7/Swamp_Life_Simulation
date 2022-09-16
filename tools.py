@@ -9,9 +9,14 @@
 
 import math
 
-
 # Calculating Manhattan Distance from Scratch
 # https://datagy.io/manhattan-distance-python/
+from symtable import Symbol
+
+import numpy as np
+from sympy import solve
+
+
 def manhattan_distance(point1, point2):
     return sum(abs(value1 - value2) for value1, value2 in zip(point1, point2))
 
@@ -81,8 +86,28 @@ def get_edge_points(x1, y1, x2, y2, x3, y3):
     x_max = max(x1, x2, x3)
     y_min = min(y1, y2, y3)
     y_max = max(y1, y2, y3)
-    for x in range(x_min, x_max+1):
-        for y in range(y_min, y_max+1):
+    for x in range(x_min, x_max + 1):
+        for y in range(y_min, y_max + 1):
             if is_edge(x1, y1, x2, y2, x3, y3, x, y):
                 points.append([x, y])
     return points
+
+
+# Base on https://codeantenna.com/a/3dJOcMVl5F
+def trace(target, tracer, velocity):
+    x1, y1 = tracer[0], tracer[1]
+    x2, y2 = target[0], target[1]
+    dx = x2 - x1
+    dy = y2 - y1
+    tan = dy/dx
+    # Solve Systems of Linear Equations in Python
+    # |x|+|y| = velocity
+    # y/x = dy/dx  --> (dy/dx)x - y = 0
+    A = np.array([[1 if dx > 0 else -1, 1 if dy > 0 else -1],
+                  [tan, -1]])
+    y = np.array([velocity, 0])
+    # then result is a list of Manhattan distance on x and y
+    result = np.linalg.solve(A, y)
+    x1 += int(result[0])
+    y1 += int(result[1])
+    return [x1, y1]
