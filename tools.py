@@ -99,6 +99,9 @@ def trace(target, tracer, velocity):
     x2, y2 = target[0], target[1]
     dx = x2 - x1
     dy = y2 - y1
+    if dx == 0:
+        y1 += (1 if dy > 0 else -1)*velocity
+        return [x1, y1]
     tan = dy/dx
     # Solve Systems of Linear Equations in Python
     # |x|+|y| = velocity

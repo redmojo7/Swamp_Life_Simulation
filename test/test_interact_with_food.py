@@ -323,10 +323,10 @@ def update_cells_4_newts():
 
 def update_cells_4_ducks():
     # add new egg to ducks
-    mama_ducks = list(filter(lambda d: d.egg is not None, my_map.ducks_list))
+    mama_ducks = list(filter(lambda d: d.eggs is not None, my_map.ducks_list))
     for duck in mama_ducks:
-        ducks.append(Duck(duck.egg))
-        duck.egg = None  # remove from mama
+        ducks.append(Duck(duck.eggs))
+        duck.eggs = None  # remove from mama
     duck_info = my_font.render(f"duck : {len(my_map.ducks_list)}", False, (0, 0, 0))
     screen.blit(duck_info, (int(0.9 * WIDTH), 15))
     for duck in my_map.ducks_list:

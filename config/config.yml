@@ -1,8 +1,8 @@
 creatures:
-  duck: 10
-  newt: 0
-  shrimp: 20
-generation: 16
+  duck: 5
+  newt: 20
+  shrimp: 30
+generation: 81
 need_restore: null
 window:
   height: 500

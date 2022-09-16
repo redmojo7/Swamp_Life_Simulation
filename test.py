@@ -254,6 +254,32 @@ def remove_died_creatures():
     my_map.shrimps_list = list(filter(lambda s: s.state != s.DEATH, my_map.shrimps_list))
 
 
+def add_baby():
+    # add new egg to map for duck
+    mama_ducks = list(filter(lambda d: d.eggs is not None, my_map.ducks_list))
+    for duck in mama_ducks:
+        my_map.ducks_list.append(Duck(duck.eggs))
+        print(f"{duck} has a baby @ {duck.eggs}")
+        duck.eggs = None  # remove from mama
+
+    # add new egg to map for newts
+    mama_newts = list(filter(lambda n: n.eggs is not None, my_map.newts_list))
+    for newt in mama_newts:
+        for baby in newt.eggs:
+            my_map.newts_list.append(Newt(baby))
+            print(f"{newt} has a baby @ {baby}")
+        newt.eggs = None  # remove from mama
+
+    # add new egg to map for shrimps
+    mama_shrimps = list(filter(lambda s: s.eggs is not None, my_map.shrimps_list))
+    for shrimp in mama_shrimps:
+        for baby in shrimp.eggs:
+            my_map.shrimps_list.append(Shrimp(baby))
+            print(f"{shrimp} has a baby @ {baby}")
+        shrimp.eggs = None  # remove from mama
+
+
+
 def next_generation():
     print("\n ### next generation ###")
     global generation
@@ -262,6 +288,8 @@ def next_generation():
     screen.blit(duck_info, (int(0.9 * WIDTH), 0))
     next_gen = np.zeros((HEIGHT, WIDTH), dtype=int)
 
+    # add baby into creatures list
+    add_baby()
     # remove died creatures
     remove_died_creatures()
 
@@ -321,13 +349,10 @@ def update_cells_4_newts():
 
 
 def update_cells_4_ducks():
-    # add new egg to ducks
-    mama_ducks = list(filter(lambda d: d.egg is not None, my_map.ducks_list))
-    for duck in mama_ducks:
-        ducks.append(Duck(duck.egg))
-        duck.egg = None  # remove from mama
+    # show duck info
     duck_info = my_font.render(f"duck : {len(my_map.ducks_list)}", False, (0, 0, 0))
     screen.blit(duck_info, (int(0.9 * WIDTH), 15))
+    # iterate all alive duck
     for duck in my_map.ducks_list:
         x = duck.x
         y = duck.y
@@ -360,20 +385,21 @@ def reproduce_food(number):
     # if there is no food left
     if len(food_positions) <= 0:
         # product_food - 10% chance of reproducing  in cell
-        if random.random() > 0.0:
+        if random.random() > 0.5:
             return
         for index in range(number):  # range(random.randint(1, number)):
             reproduce = True
             try_times = 5
             while reproduce or try_times == 0:
                 try_times -= 1
-                x = random.randint(0, HEIGHT - 10)  # - 10: not close to the board
-                y = random.randint(0, WIDTH - 10)
+                #x = random.randint(0, HEIGHT - 10)  # - 10: not close to the board
+                #y = random.randint(0, WIDTH - 10)
                 # Moore's neighbourhoods with 5 points, there is no any creatures
-                if np.sum(current_gen[x - 5:x + 6, y - 5:y + 6]) == 0:
-                    food_positions.append([x, y])
-                    reproduce = False
-                    print(f"Food was produced at ({x}, {y})")
+                #if np.sum(current_gen[x - 5:x + 6, y - 5:y + 6]) == 0:
+                [x, y] = random_position_in_water()
+                food_positions.append([x, y])
+                reproduce = False
+                print(f"Food was produced at ({x}, {y})")
 
     # add foods to map
     my_map.add_food(food_positions)

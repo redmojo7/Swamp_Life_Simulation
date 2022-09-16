@@ -8,6 +8,12 @@
 #
 # 01/09/2022 – Base version for assignment
 #
+#
+# max life span :
+# duck is 10 years
+# newt is 6 years
+# shrimp is 2 years
+import math
 import random
 
 import numpy as np
@@ -17,10 +23,14 @@ from tools import manhattan_distance, trace
 
 class Creature(object):  #
     DEATH = "death"
+    EGG = "egg"
+    ADULT = "adult"
 
     def __init__(self, pos):
         self.velocity = None
         self.vision = None
+        self.eggs = None
+        self.state = self.EGG
         self.x = int(pos[0])
         self.y = int(pos[1])
         self.age = 0
@@ -72,9 +82,6 @@ class Creature(object):  #
             # if there is no food around, then random running
             self.random_run()
 
-    def is_same_position(self, position):
-        return position[0] == self.x and position[1] == self.y
-
     # if target was found, return true
     # target is a numpy array
     def search_target(self, target):
@@ -118,7 +125,7 @@ class Creature(object):  #
             self.x = newt_pos[0]
             self.y = newt_pos[1]
             self.eat_newt(my_map, newt_pos)
-            self.time_2_death += 15  # live longer
+            self.time_2_death += 2  # live longer
         else:
             self.move_to_target(newt_pos)
 
@@ -131,7 +138,7 @@ class Creature(object):  #
             self.x = shrimp_pos[0]
             self.y = shrimp_pos[1]
             self.eat_shrimp(my_map, shrimp_pos)
-            self.time_2_death += 10  # live longer
+            self.time_2_death += 1  # live longer
         else:
             self.move_to_target(shrimp_pos)
 
@@ -164,18 +171,14 @@ class Creature(object):  #
 
 class Duck(Creature):
     name = "Duck"
-    TIME_2_HATCH = 4
-    TIME_2_LAY_EGG = 10
-    TIME_2_AGED = 15
+    TIME_2_HATCH = 10
+    TIME_2_AGED = 90
     time_2_death = 100
-    EGG = "egg"
-    ADULT = "adult"
     VELOCITY_SWIMMING = 30
     VELOCITY_RUNNING = 40
 
     def __init__(self, pos):
         super().__init__(pos)  # Call parent __init__
-        self.egg = None
         self.state = self.EGG
         self.velocity = self.VELOCITY_SWIMMING  # velocity / speed of movement
         self.vision = 200  # can see food from max 40 points away
@@ -186,12 +189,13 @@ class Duck(Creature):
     def step_change(self, my_map):
         # change age, state, velocity, ect...
         self.change_status(my_map)
+        # run for ADULT
         if self.state == self.ADULT:
             # before moving, check if there are some newts or shrimps around * points (it depends on vision)
             # if self.saw_alive_newts(my_map):
             newt_pos = self.search_nearst_target(my_map.get_newts_pos())
-            # 50% of chance it wants to eat some foods
-            if newt_pos and random.random() > 0.5:
+            # 30% of chance it wants to eat some foods
+            if newt_pos and random.random() > 0.3:
                 self.track_newts(my_map, newt_pos)
             else:
                 shrimp_pos = self.search_nearst_target(my_map.get_shrimps_pos())
@@ -207,8 +211,8 @@ class Duck(Creature):
         elif self.state == self.ADULT:
             if self.velocity == 10 and self.age >= self.TIME_2_AGED:  # old
                 self.velocity = 5
-            if self.age >= self.TIME_2_LAY_EGG and random.random() < 0.03:  # 10% chance to lay eggs
-                self.egg = [self.x, self.y]
+            if random.random() < 0.01/math.log2(len(my_map.ducks_list)+1):  # (0.01/log2(num+1))% chance to lay eggs for adult
+                self.eggs = [self.x, self.y]
             if self.age > self.time_2_death:  # death
                 self.state = self.DEATH
         # Ducks can run around 6-8 miles per hour
@@ -228,14 +232,15 @@ class Duck(Creature):
 
 
 class Newt(Creature):
-    time_2_death = 80
+    TIME_2_HATCH = 5
+    TIME_2_AGED = 55
+    time_2_death = 60
     name = "Newt"
 
     def __init__(self, pos):
         super().__init__(pos)  # Call parent __init__
         self.velocity = 15
         self.size = 15
-        self.state = "Newt"
         self.vision = 150  # can see food from max 40 points away
 
     def __str__(self):
@@ -246,7 +251,12 @@ class Newt(Creature):
         self.age += 1
         if self.age > self.time_2_death:  # death
             self.state = self.DEATH
-        if self.state == "Newt":
+        if self.state == self.EGG and self.age >= self.TIME_2_HATCH:  # ready to HATCH
+            self.state = self.ADULT
+        if random.random() < 0.03/math.log2(len(my_map.newts_list)+1):  # (0.03/log2(num+1))% chance to lay eggs for adult
+            self.eggs = [[self.x, self.y]]*random.randint(1, 2)
+        # run for ADULT
+        if self.state == self.ADULT:
             # before moving, check if there are some Duck around * points (it depends on vision)
             duck_pos = self.search_nearst_target(my_map.get_ducks_pos())
             if duck_pos:
@@ -255,24 +265,30 @@ class Newt(Creature):
                 # check if there are some shrimps around * points (it depends on vision)
                 shrimp_pos = self.search_nearst_target(my_map.get_shrimps_pos())
                 # 50% of chance it wants to eat some foods
-                if shrimp_pos and random.random() > 0.5:
+                if shrimp_pos and random.random() > 0.4:
                     self.track_shrimp(my_map, shrimp_pos)
                 else:  # don't found any newts or shrimps
                     super().random_run()  # Call parent step_change
 
     def get_size(self):
-        return self.size
+        if self.state == self.EGG:
+            size = 10
+        else:
+            size = 15
+        return size
 
 
 class Shrimp(Creature):
-    time_2_death = 50
+    TIME_2_HATCH = 2
+    TIME_2_AGED = 28
+    time_2_death = 30
     name = "Shrimp"
+    ADULT_AGE = 10
 
     def __init__(self, pos):
         super().__init__(pos)  # Call parent __init__
         self.velocity = 5
         self.size = 8
-        self.state = "Shrimp"
         self.vision = 80  # can see food from max 40 points away
 
     def __str__(self):
@@ -283,7 +299,12 @@ class Shrimp(Creature):
         self.age += 1
         if self.age > self.time_2_death:  # death
             self.state = self.DEATH
-        if self.state == "Shrimp":
+        if self.state == self.EGG and self.age >= self.TIME_2_HATCH:  # ready to HATCH
+            self.state = self.ADULT
+        if random.random() < 0.05/math.log2(len(my_map.shrimps_list)+1):  # (0.1/log2(num+1))% chance to lay eggs for adult
+            self.eggs = [[self.x, self.y]]*random.randint(1, 5)
+        # run for ADULT
+        if self.state == self.ADULT:
             # before moving, check if there are some Duck around * points (it depends on vision)
             predictor_pos = self.search_nearst_target(my_map.get_ducks_pos() + my_map.get_newts_pos())
             if predictor_pos:
@@ -291,11 +312,15 @@ class Shrimp(Creature):
             else:
                 # before moving, check if there are some foods around * points (it depends on vision)
                 food_pos = self.search_nearst_target(my_map.get_foods_pos())
-                # 50% of chance it wants to eat some foods
-                if food_pos and random.random() > 0.5:
-                    self.track_foods(my_map, food_pos)
+                # 100% of chance it wants to eat some foods
+                if food_pos:
+                    self.track_food(my_map, food_pos)
                 else:  # don't found any newts or shrimps
                     super().random_run()  # Call parent step_change
 
     def get_size(self):
-        return self.size
+        if self.state == self.EGG:
+            size = 5
+        else:
+            size = 8
+        return size

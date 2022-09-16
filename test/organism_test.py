@@ -1,5 +1,7 @@
 import csv
+import math
 import os
+import random
 
 import pandas as pd
 import numpy as np
@@ -32,9 +34,10 @@ food_cells[5, 5] = 1
 
 # drop this (binary search algorithm)
 def check_neighbour_with_points(points):
-    if np.sum(food_cells[0 - points:points+1, 0 - points:points+1]) == 0:
-        next_points = points - (points//2)
+    if np.sum(food_cells[0 - points:points + 1, 0 - points:points + 1]) == 0:
+        next_points = points - (points // 2)
         check_neighbour_with_points(next_points)
+
 
 # find the nearest enemy
 enemies = [
@@ -45,9 +48,8 @@ enemies = [
 x = 5
 y = 5
 
-enemy = min([e for e in enemies], key=lambda e: pow(e[0]-x, 2) + pow(e[1]-y, 2))
+enemy = min([e for e in enemies], key=lambda e: pow(e[0] - x, 2) + pow(e[1] - y, 2))
 print(enemy)
-
 
 #
 countries = [
@@ -73,12 +75,10 @@ print(grid)
 terrain = [[row, col] for row in range(100, 210) for col in range(80, 90)]
 print(terrain)
 
-list = [[1,1], [2,2]]
-print(list.index([1,1]))
-if [1,2] not in list:
+list = [[1, 1], [2, 2]]
+print(list.index([1, 1]))
+if [1, 2] not in list:
     print("not")
-
-
 
 # Driver program to test above function
 # Let us check whether the point P(10, 15)
@@ -107,7 +107,7 @@ list = []
 
 for i in range(500, 800):
     for j in range(450, 551):
-        if is_inside(650, 450,500, 550,800, 550, i, j):
+        if is_inside(650, 450, 500, 550, 800, 550, i, j):
             list.append([i, j])
 print(list)
 if is_inside(850, 450, 700, 550, 1000, 550, 850, 450):
@@ -126,6 +126,8 @@ land_min_y = 400
 land_max_y = 480
 
 land = [[row, col] for row in range(land_min_y, land_max_y) for col in range(land_min_x, land_max_x)]
+
+
 # myMap.set_land(land)
 def show_land():
     width = land_max_y - land_min_y
@@ -133,15 +135,14 @@ def show_land():
     # pygame.draw.rect(screen, COLOR_LAND, (land_min_x, land_min_y, width, height))
 
 
-#b = np.degrees(angle([-82,-29], [-82,-29]))
-#print(a)
+# b = np.degrees(angle([-82,-29], [-82,-29]))
+# print(a)
 
 
-for index in range(min(10,5), max(10,5)+1):
+for index in range(min(10, 5), max(10, 5) + 1):
     print(index)
 
-
-bbox = [(0, 0), (2,2), (4,0)]
+bbox = [(0, 0), (2, 2), (4, 0)]
 poly = Polygon(bbox)
 point = Point(2, 1)
 result = poly.contains(point)
@@ -149,8 +150,7 @@ result = poly.contains(point)
 print(result)
 print(poly)
 
-
-points = get_edge_points(0,0,2,2,4,0)
+points = get_edge_points(0, 0, 2, 2, 4, 0)
 print(points)
 
 data = np.array(points)
@@ -159,11 +159,12 @@ data = np.array(points)
 # Taking transpose
 x, y = data.T
 # plot our list in X,Y coordinates
-#plt.scatter(x, y)
-#plt.ylabel('some numbers')
-#plt.show()
+# plt.scatter(x, y)
+# plt.ylabel('some numbers')
+# plt.show()
 
 import yaml
+
 with open(f"{os.getcwd()}/config/config.yml") as config_file:
     config = yaml.safe_load(config_file)
 print(config['window']['height'])
@@ -171,7 +172,7 @@ print(config['window']['width'])
 np.set_printoptions(precision=0)
 food_cells = np.zeros((20, 20), dtype=int)
 
-#np.savetxt("foo.csv", food_cells, fmt="%0d", delimiter=",")
+# np.savetxt("foo.csv", food_cells, fmt="%0d", delimiter=",")
 
 df = pd.read_csv(f'{os.getcwd()}/foo.csv', sep=',', header=None)
 print(df.values)
@@ -188,24 +189,26 @@ with open(f"{os.getcwd()}/output/creatures.csv") as csv_file:
             line_count += 1
     print(f'Processed {line_count} lines.')
 
-
-#导入sympy
+# 导入sympy
 from sympy import *
 
-#定义变量
+# 定义变量
 x = Symbol('x')
 y = Symbol('y')
-result = solve([x + 1 - y,-1 * x + 1 - y],[x,y])
+result = solve([x + 1 - y, -1 * x + 1 - y], [x, y])
 print(result[x])
 print(result[y])
 
-result = solve([x - 40 + y, (10)*x - y], [x,y])
+result = solve([x - 40 + y, (10) * x - y], [x, y])
 print(result[x])
 print(result[y])
-
 
 A = np.array([[1, 1],
               [10, -1]])
 y = np.array([40, 0])
 x = np.linalg.solve(A, y)
 print(x)
+
+print([[1, 2]] * random.randint(1, 5))
+for i in range(1, 20):
+    print(0.1/math.log(i+1))
