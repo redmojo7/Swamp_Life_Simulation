@@ -39,7 +39,7 @@ COLOR_GRID = (40, 40, 40)
 COLOR_NEWT = (0, 255, 255)  # Cyan
 COLOR_DUCK = (128, 128, 128)  # Gray
 COLOR_SHRIMP = (220, 20, 60)  # Crimson
-COLOR_FOOD = (255, 99, 71)  # Tomato
+COLOR_FOOD = (52, 140, 49)  # Grass
 COLOR_TURQUOISE = (64, 224, 208)  # Turquoise
 COLOR_DARK_BLUE = (0, 60, 95)  #
 COLOR_LAND = (242, 191, 141)  # A ztec Gold
@@ -177,6 +177,7 @@ duck_img = pygame.image.load('png/duck2.png')
 duck_egg_img = pygame.image.load('png/duck_egg.png')
 newt_img = pygame.image.load('png/newt2.png')
 shrimp_img = pygame.image.load('png/shrimp.png')
+grass_img = pygame.image.load('png/grass.png')
 
 
 def map_border_check(creature):
@@ -279,6 +280,20 @@ def add_baby():
         shrimp.eggs = None  # remove from mama
 
 
+def show_alive_info():
+    # show ducks info
+    duck_info = my_font.render(f"duck : {len(my_map.ducks_list)}", False, (0, 0, 0))
+    screen.blit(duck_info, (int(0.9 * WIDTH), 15))
+    # show newts info
+    newt_info = my_font.render(f"newt : {len(my_map.newts_list)}", False, (0, 0, 0))
+    screen.blit(newt_info, (int(0.9 * WIDTH), 30))
+    # show shrimps info
+    shrimps_info = my_font.render(f"shrimp : {len(my_map.shrimps_list)}", False, (0, 0, 0))
+    screen.blit(shrimps_info, (int(0.9 * WIDTH), 45))
+    # show foods info
+    foods_info = my_font.render(f"food : {len(my_map.foods)}", False, (0, 0, 0))
+    screen.blit(foods_info, (int(0.9 * WIDTH), 60))
+
 
 def next_generation():
     print("\n ### next generation ###")
@@ -292,6 +307,8 @@ def next_generation():
     add_baby()
     # remove died creatures
     remove_died_creatures()
+    # show the number of alive creatures
+    show_alive_info()
 
     # for ducks
     update_cells_4_ducks()
@@ -304,9 +321,6 @@ def next_generation():
 
 
 def update_cells_4_shrimps():
-    my_map.shrimps_list = list(filter(lambda s: s.state != s.DEATH, my_map.shrimps_list))
-    shrimps_info = my_font.render(f"shrimp : {len(my_map.shrimps_list)}", False, (0, 0, 0))
-    screen.blit(shrimps_info, (int(0.9 * WIDTH), 35))
     if not my_map.shrimps_list:
         print("all shrimps die")
     for shrimp in my_map.shrimps_list:
@@ -326,8 +340,6 @@ def update_cells_4_shrimps():
 
 
 def update_cells_4_newts():
-    newt_info = my_font.render(f"newt : {len(my_map.newts_list)}", False, (0, 0, 0))
-    screen.blit(newt_info, (int(0.9 * WIDTH), 25))
     if not my_map.newts_list:
         print("all newts die")
     for newt in my_map.newts_list:
@@ -349,9 +361,6 @@ def update_cells_4_newts():
 
 
 def update_cells_4_ducks():
-    # show duck info
-    duck_info = my_font.render(f"duck : {len(my_map.ducks_list)}", False, (0, 0, 0))
-    screen.blit(duck_info, (int(0.9 * WIDTH), 15))
     # iterate all alive duck
     for duck in my_map.ducks_list:
         x = duck.x
@@ -375,38 +384,29 @@ def update_cells_4_ducks():
             screen.blit(scaled_duck_img, (x_moved, y_moved))
 
 
-food_positions = []
-
-
 # reproduce food with max number
 def reproduce_food(number):
+    food_positions = []
     food_width = 5
     food_height = 5
     # if there is no food left
-    if len(food_positions) <= 0:
+    if len(my_map.foods) <= 0:
         # product_food - 10% chance of reproducing  in cell
         if random.random() > 0.5:
             return
         for index in range(number):  # range(random.randint(1, number)):
-            reproduce = True
-            try_times = 5
-            while reproduce or try_times == 0:
-                try_times -= 1
-                #x = random.randint(0, HEIGHT - 10)  # - 10: not close to the board
-                #y = random.randint(0, WIDTH - 10)
-                # Moore's neighbourhoods with 5 points, there is no any creatures
-                #if np.sum(current_gen[x - 5:x + 6, y - 5:y + 6]) == 0:
-                [x, y] = random_position_in_water()
-                food_positions.append([x, y])
-                reproduce = False
-                print(f"Food was produced at ({x}, {y})")
+            [x, y] = random_position_in_water()
+            food_positions.append([x, y])
+            print(f"Food was produced at ({x}, {y})")
+        # add foods to map
+        my_map.add_food(food_positions)
 
-    # add foods to map
-    my_map.add_food(food_positions)
     # show food left on the screen
-    for row, col in food_positions:
-        pygame.draw.rect(screen, COLOR_FOOD, (col, row, food_width, food_height))
-        print(f"Food will be show at ({row}, {col})")
+    for col, row in my_map.foods:
+        #pygame.draw.rect(screen, COLOR_FOOD, (col, row, food_width, food_height))
+        scaled_grass_img = pygame.transform.scale(grass_img, (food_width, food_height))
+        screen.blit(scaled_grass_img, (col, row))
+        # print(f"Food will be show at ({col}, {row})")
 
 
 # infinite loop
@@ -471,11 +471,16 @@ while True:
     if running:
         # completely fill the screen with initialing colour
         screen.fill(COLOR_LAND)
-        draw_terrain()
+        # draw_terrain()
+        # show terrain
+        for row in range(0, my_map.height - 1):
+            for col in range(0, my_map.width - 1):
+                if my_map.mountains_cells[row, col] == 1:
+                    screen.set_at((col, row), COLOR_DEEPGREEN)
+
         current_gen = next_generation()
         #
-        reproduce_food(25)
-        # show terrain
+        reproduce_food(50)
 
         # save app states
         # save generation
@@ -488,20 +493,6 @@ while True:
             writer = csv.writer(f)
             for d in my_map.ducks_list + my_map.newts_list + my_map.shrimps_list:
                 writer.writerow([d.name, d.age, d.state, d.get_size(), d.velocity, d.x, d.y])
-
-        # RED = (255, 0, 0)
-        # df = pd.read_csv('foo.csv', sep=',', header=None)
-        # if len(points) > 1:
-        # rect = pygame.draw.lines(screen, RED, True, points, 3)
-        '''
-        for i in range(df.shape[0]): #iterate over rows
-            for j in range(df.shape[1]): #iterate over columns
-                if df.at[i, j] == 0: #get cell value
-                    for x in range(i, i*20+1):
-                        for y in range(j, j*20+1):
-                            #pygame.draw.rect(screen, COLOR_FOOD, (x, y, 1, 1))
-                            #screen.set_at((x, y), COLOR_FOOD)
-        '''
 
         pygame.display.update()
         # points.append(pygame.mouse.get_pos())

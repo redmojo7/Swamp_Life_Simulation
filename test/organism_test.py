@@ -212,3 +212,7 @@ print(x)
 print([[1, 2]] * random.randint(1, 5))
 for i in range(1, 20):
     print(0.1/math.log(i+1))
+
+
+
+print(is_inside(300, 25,185, 140,415, 140, 310, 131))

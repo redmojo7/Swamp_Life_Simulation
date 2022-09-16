@@ -211,7 +211,7 @@ class Duck(Creature):
         elif self.state == self.ADULT:
             if self.velocity == 10 and self.age >= self.TIME_2_AGED:  # old
                 self.velocity = 5
-            if random.random() < 0.01/math.log2(len(my_map.ducks_list)+1):  # (0.01/log2(num+1))% chance to lay eggs for adult
+            if random.random() < 0.01/math.log2(len(my_map.ducks_list)+2):  # (0.01/log2(num+1))% chance to lay eggs for adult
                 self.eggs = [self.x, self.y]
             if self.age > self.time_2_death:  # death
                 self.state = self.DEATH
