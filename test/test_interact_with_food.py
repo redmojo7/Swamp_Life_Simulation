@@ -71,7 +71,7 @@ pygame.display.update()
 current_gen = np.zeros((HEIGHT, WIDTH), dtype=int)
 
 # create Map Object
-my_map = Map(WIDTH, HEIGHT)
+my_map = Map(WIDTH, HEIGHT, LAND_HEIGHT)
 
 # Initialing terrain (for high altitude)
 

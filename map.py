@@ -32,9 +32,10 @@ class Map:
     # foods, etc. is a numpy array, value 1 means that entity exist here
     food_cells = None
 
-    def __init__(self, width=500, height=500):
+    def __init__(self, width=500, height=500, land_height=166):
         # width:y:col,  height:x:row
         # by default, map are 500*500
+        self.land_height = land_height
         self.width = width
         self.height = height
         self.food_cells = np.zeros((height, width), dtype=int)
@@ -67,8 +68,8 @@ class Map:
         # get all points of border of all mountains (join two list by '+')
         self.mountains_borders += get_edge_points(x1, y1, x2, y2, x3, y3)
 
-    def set_lands(self, land_height):
-        for row in range(land_height):
+    def set_lands(self):
+        for row in range(self.land_height):
             for col in range(self.width):
                 self.lands_cells[row, col] = 1
 
@@ -127,3 +128,32 @@ class Map:
         for shrimp in self.shrimps_list:
             shrimps_cells[shrimp.y, shrimp.x] = 1
         return shrimps_cells
+
+    def initial_terrain(self):
+        # Initialing lands
+        self.set_lands()
+
+        # Initialing mountains
+        # triangle (top_middle, left_bottom, right_bottom)
+        # Draws the mountains in sea
+        EXPANDED_POINT = 15
+        WIDTH = self.width
+        HEIGHT = self.height
+        for x_offset in range(int(0.125 * WIDTH), int(0.625 * WIDTH), int(WIDTH / 6)):
+            print(f"Initialing mountains in sea :\n "
+                  f"{[int(0.125 * WIDTH) + x_offset, int(0.55 * HEIGHT) - EXPANDED_POINT]},"
+                  f"{[0 + x_offset - EXPANDED_POINT, int(0.75 * HEIGHT) + EXPANDED_POINT]},"
+                  f"{[int(0.25 * WIDTH) + x_offset + EXPANDED_POINT, int(0.75 * HEIGHT) + EXPANDED_POINT]}")
+            self.set_mountains(int(0.125 * WIDTH) + x_offset, int(0.55 * HEIGHT) - EXPANDED_POINT,
+                               0 + x_offset - EXPANDED_POINT, int(0.75 * HEIGHT) + EXPANDED_POINT,
+                               int(0.25 * WIDTH) + x_offset + EXPANDED_POINT, int(0.75 * HEIGHT) + EXPANDED_POINT)
+
+        # Draws mountains on land (extend mountains for 10 points for each side)
+
+        self.set_mountains(int(0.3 * WIDTH), int(0.08 * HEIGHT) - EXPANDED_POINT,
+                           int(0.2 * WIDTH) - EXPANDED_POINT, int(0.25 * HEIGHT) + EXPANDED_POINT,
+                           int(0.4 * WIDTH) + EXPANDED_POINT, int(0.25 * HEIGHT) + EXPANDED_POINT)
+        print(f"Initialing mountains on land :\n"
+              f"{[int(0.3 * WIDTH), int(0.08 * HEIGHT) - EXPANDED_POINT]},"
+              f"{[int(0.2 * WIDTH) - EXPANDED_POINT, int(0.25 * HEIGHT) + EXPANDED_POINT]},"
+              f"{[int(0.4 * WIDTH) + EXPANDED_POINT, int(0.25 * HEIGHT) + EXPANDED_POINT]}")

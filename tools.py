@@ -14,7 +14,7 @@ import math
 from symtable import Symbol
 
 import numpy as np
-from sympy import solve
+import random
 
 
 def manhattan_distance(point1, point2):
@@ -100,9 +100,9 @@ def trace(target, tracer, velocity):
     dx = x2 - x1
     dy = y2 - y1
     if dx == 0:
-        y1 += (1 if dy > 0 else -1)*velocity
+        y1 += (1 if dy > 0 else -1) * velocity
         return [x1, y1]
-    tan = dy/dx
+    tan = dy / dx
     # Solve Systems of Linear Equations in Python
     # |x|+|y| = velocity
     # y/x = dy/dx  --> (dy/dx)x - y = 0
@@ -114,3 +114,26 @@ def trace(target, tracer, velocity):
     x1 += int(result[0])
     y1 += int(result[1])
     return [x1, y1]
+
+
+# return a random position [x,y]
+def random_position(width, height, mountains_cells):
+    # keep away from the boarder, at least 10 points
+    recreate = True
+    while recreate:
+        [col, row] = [random.randint(0, width - 10), random.randint(0, height - 10)]
+        # but not on the mountain
+        if mountains_cells[row, col] == 0:
+            recreate = False
+    return [col, row]
+
+
+def random_position_in_water(width, land_height, height, mountains_cells):
+    # keep away from the boarder, at least 10 points
+    recreate = True
+    while recreate:
+        [col, row] = [random.randint(0, width - 10), random.randint(land_height, height - 10)]
+        # but not on the mountain
+        if mountains_cells[row, col] == 0:
+            recreate = False
+    return [col, row]

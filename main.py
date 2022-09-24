@@ -1,118 +1,133 @@
 #
-# Author :
-# ID :
+# Author : Peng
+# ID : 21053409
 #
-#
+# duck eat newt
+# newt eat shrimp
 #
 # Revisions:
 #
 # 12/4/21 – Base version for assignment
 #
-import time
-
-import numpy as np
 import pygame
-import random
+import os.path
+from os import path
+from config import load_config
+from terrain import draw_terrain
+from grass import reproduce_food
+from map import Map
+from swamp import Duck, Shrimp, Newt
+from simulation import restore, save_states, show_simulation_info, interactions
+from grid import update_cells, add_baby, remove_died_creatures
+from tools import random_position_in_water, random_position
 
+# load configuration
+config = load_config()
 
-ROW_MAX = 400
-COL_MAX = 400
-POP = 20
-STEPS = 10
+# create output folder
+if not path.exists('output'):
+    # Create a new directory because it does not exist
+    os.makedirs('output')
+    print("The new directory 'output' is created!")
 
-COLOR_BG = (10,10,10)
-COLOR_GRID = (40, 40, 40)
-COLOR_DIE_NEXT = (170, 170, 170)
-COLOR_ALIVE_NEXT = (255, 255, 255)
+# window size
+HEIGHT = config['window']['height']
+LAND_HEIGHT = int(HEIGHT / 3)
+WIDTH = config['window']['width']
+
+# creatures
+NUM_DUCK = config['creatures']['duck']
+NUM_NEWT = config['creatures']['newt']
+NUM_SHRIMP = config['creatures']['shrimp']
+
+# if it needs to restore simulation
+need_restore = config['need_restore']
+
+# set colors
+COLOR_LAND = (242, 191, 141)
+
+# generation is 0
+generation = 0
 
 # Initializing Pygame
 pygame.init()
-# Initializing surface
-# create the display screen object
-screen = pygame.display.set_mode((COL_MAX, ROW_MAX))
-
+# setting the pygame font style and size of font
+my_font = pygame.font.SysFont('Comic Sans MS', 12)
+# Initializing surface, create the display screen object  pygame.display.set_mode((width, height))
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
 # set the pygame window name
 pygame.display.set_caption("Swamp Life Simulation")
-
-running = True
-cell = np.zeros((ROW_MAX, COL_MAX), dtype=int)
 # Initialing Color
-screen.fill(COLOR_GRID)
+screen.fill(COLOR_LAND)
 # Drawing :This function is used to update the content of the entire display surface of the screen.
 pygame.display.flip()
+pygame.display.update()
 
-# Initialing Color
-for i in range(10):
-    # index from 0 to (max-1)
-    randX = random.randint(0, ROW_MAX-1)
-    randY = random.randint(0, COL_MAX-1)
-    cell[randX, randY] = 1
-    print("position: ", randX, randY)
-    pygame.draw.rect(screen, COLOR_ALIVE_NEXT, (randX, randY, 9, 9))
-    pygame.display.update()
+# create Map Object
+my_map = Map(WIDTH, HEIGHT, LAND_HEIGHT)
+
+# Initialing terrain (for high altitude)
+my_map.initial_terrain()
+
+ducks = []
+newts = []
+shrimps = []
+
+if need_restore is True:
+    # reset generation
+    generation = config['generation']
+    restore(ducks, newts, shrimps)
+else:
+    # Initialing Creatures
+    [ducks.append(Duck(random_position(WIDTH, HEIGHT, my_map.mountains_cells))) for i in range(NUM_DUCK)]
+    [newts.append(Newt(random_position(WIDTH, HEIGHT, my_map.mountains_cells))) for i in range(NUM_NEWT)]
+    [shrimps.append(Shrimp(random_position_in_water(WIDTH, LAND_HEIGHT, HEIGHT, my_map.mountains_cells))) for i in range(NUM_SHRIMP)]
+
+my_map.add_creatures(ducks)
+my_map.add_creatures(newts)
+my_map.add_creatures(shrimps)
 
 
-SIZE = 10
-# dimensions of the object
-WIDTH = SIZE - 1
-HEIGHT = SIZE - 1
+def next_generation():
+    print("\n ### next generation ###")
+    global generation
+    generation += 1
+    # add baby into creatures list
+    add_baby(my_map)
+    # remove died creatures
+    remove_died_creatures(my_map)
+    # show the number of alive creatures
+    show_simulation_info(screen, my_font, generation, my_map)
+    # update cells for ducks, newts, shrimps
+    update_cells(screen, my_map)
 
-# velocity / speed of movement
-VELOCITY = 10
 
-def update_cell():
-    next_grid = np.zeros((cell.shape[0], cell.shape[1]), dtype=int)
-    color = COLOR_GRID
-    print("next generation")
-    for row, col in np.ndindex(cell.shape):
-        for index in range(cell[row, col]):
-            row_moved = row + random.choice([-abs(VELOCITY), 0, VELOCITY])
-            col_moved = col + random.choice([-abs(VELOCITY), 0, VELOCITY])
-            if row_moved < 0:
-                row_moved = 0
-            if col_moved < 0:
-                col_moved = 0
-            if row_moved >= ROW_MAX:
-                row_moved = ROW_MAX - VELOCITY
-            if col_moved >= COL_MAX:
-                col_moved = COL_MAX - VELOCITY
-            # Reproduction - 10% chance of reproducing +1 to pop in cell
-            if random.random() <= 1:
-                next_grid[row_moved, col_moved] += 1
-                color = COLOR_ALIVE_NEXT
-                print(f"from position ({row}, {col}) to position: ({row_moved}, {col_moved})")
-            #else:
-            #    color = COLOR_DIE_NEXT
+# Indicates program is running
+program_running = True
+# Indicates simulation is running
+simulation_running = True
 
-            # drawing object on screen which is rectangle here
-            pygame.draw.rect(screen, color, (col_moved, row_moved, WIDTH, HEIGHT))
-    return next_grid
-
-# Indicates pygame is running
-running = True
-
-# infinite loop
-while running:
+while program_running:
     # Creates time delay of 10ms
-    pygame.time.delay(10)
+    pygame.time.delay(800)
 
-        # iterate over the list of Event objects
+    # iterate over the list of Event objects
     # that was returned by pygame.event.get() method.
-    for event in pygame.event.get():
+    simulation_running = interactions(screen, simulation_running, my_font)
 
-        # if event object type is QUIT
-        # then quitting the pygame
-        # and program both.
-        if event.type == pygame.QUIT:
-
-            # it will make exit the while loop
-            run = False
-
-    # completely fill the screen with initialing colour
-    screen.fill(COLOR_GRID)
-    cell = update_cell()
-
-    pygame.display.update()
+    if simulation_running:
+        # completely fill the screen with initialing colour
+        screen.fill(COLOR_LAND)
+        # show terrain
+        draw_terrain(screen, my_map)
+        # next generation
+        next_generation()
+        # reproduce grass
+        reproduce_food(10, screen, my_map)
+        # save app states
+        save_states(generation, my_map)
+        # update screen
+        pygame.display.update()
 
 # closes the pygame window
 pygame.quit()

@@ -65,12 +65,6 @@ class Creature(object):  #
         self.x += moved_cells_x
         self.y += moved_cells_y
 
-    # if target was found, return true
-    # target is a numpy array
-    def search_target(self, target):
-        return np.sum(target[self.x - self.vision:self.x + self.vision + 1,
-                      self.y - self.vision:self.y + self.vision + 1]) != 0
-
     # to find the nearest one by calculating the Manhattan distance
     # target is a position[x,y] list
     # return the nearest position [x,y]
@@ -151,6 +145,9 @@ class Creature(object):  #
         self.size = int(size)
         self.velocity = int(velocity)
 
+    def __str__(self):
+        return f"{self.state} {self.name} aged {self.age} @ ({self.x},{self.y} with velocity {self.velocity})"
+
 
 class Duck(Creature):
     name = "Duck"
@@ -165,9 +162,7 @@ class Duck(Creature):
         self.state = self.EGG
         self.velocity = self.VELOCITY_SWIMMING  # velocity / speed of movement
         self.vision = 200  # can see food from max 40 points away
-
-    def __str__(self):
-        return f"{self.state} Duck aged {self.age} @ ({self.x},{self.y})"
+        print(f"Init {self}")
 
     def step_change(self, my_map):
         # change age, state, velocity, ect...
@@ -194,7 +189,8 @@ class Duck(Creature):
         elif self.state == self.ADULT:
             if self.velocity == 10 and self.age >= self.TIME_2_AGED:  # old
                 self.velocity = 5
-            if random.random() < 0.01/math.log2(len(my_map.ducks_list)+2):  # (0.01/log2(num+1))% chance to lay eggs for adult
+            if random.random() < 0.01 / math.log2(
+                    len(my_map.ducks_list) + 2):  # (0.01/log2(num+1))% chance to lay eggs for adult
                 self.eggs = [self.x, self.y]
             if self.age > self.time_2_death:  # death
                 self.state = self.DEATH
@@ -225,9 +221,7 @@ class Newt(Creature):
         self.velocity = 15
         self.size = 15
         self.vision = 150  # can see food from max 40 points away
-
-    def __str__(self):
-        return f"Newt aged {self.age} @ ({self.x},{self.y})"
+        print(f"Init {self}")
 
     def step_change(self, my_map):
         # change age, state, velocity, ect...
@@ -236,8 +230,9 @@ class Newt(Creature):
             self.state = self.DEATH
         if self.state == self.EGG and self.age >= self.TIME_2_HATCH:  # ready to HATCH
             self.state = self.ADULT
-        if random.random() < 0.03/math.log2(len(my_map.newts_list)+1):  # (0.03/log2(num+1))% chance to lay eggs for adult
-            self.eggs = [[self.x, self.y]]*random.randint(1, 2)
+        if random.random() < 0.03 / math.log2(
+                len(my_map.newts_list) + 1):  # (0.03/log2(num+1))% chance to lay eggs for adult
+            self.eggs = [[self.x, self.y]] * random.randint(1, 2)
         # run for ADULT
         if self.state == self.ADULT:
             # before moving, check if there are some Duck around * points (it depends on vision)
@@ -273,9 +268,7 @@ class Shrimp(Creature):
         self.velocity = 5
         self.size = 8
         self.vision = 80  # can see food from max 40 points away
-
-    def __str__(self):
-        return f"Shrimp aged {self.age} @ ({self.x},{self.y})"
+        print(f"Init {self}")
 
     def step_change(self, my_map):
         # change age, state, velocity, ect...
@@ -284,8 +277,9 @@ class Shrimp(Creature):
             self.state = self.DEATH
         if self.state == self.EGG and self.age >= self.TIME_2_HATCH:  # ready to HATCH
             self.state = self.ADULT
-        if random.random() < 0.05/math.log2(len(my_map.shrimps_list)+1):  # (0.1/log2(num+1))% chance to lay eggs for adult
-            self.eggs = [[self.x, self.y]]*random.randint(1, 5)
+        if random.random() < 0.05 / math.log2(
+                len(my_map.shrimps_list) + 1):  # (0.1/log2(num+1))% chance to lay eggs for adult
+            self.eggs = [[self.x, self.y]] * random.randint(1, 5)
         # run for ADULT
         if self.state == self.ADULT:
             # before moving, check if there are some Duck around * points (it depends on vision)

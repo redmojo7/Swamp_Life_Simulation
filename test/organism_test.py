@@ -5,6 +5,7 @@ import random
 
 import pandas as pd
 import numpy as np
+from sympy import *
 
 from swamp import Duck, Shrimp
 from map import Map
@@ -12,7 +13,7 @@ from tools import is_inside, get_edge_points
 import matplotlib.pyplot as plt
 from shapely.geometry import Point, Polygon
 
-my_map = Map(500, 500)
+my_map = Map(500, 500, 166)
 
 duck = Duck([10, 20])
 for i in range(100):
@@ -165,7 +166,7 @@ x, y = data.T
 
 import yaml
 
-with open(f"{os.getcwd()}/config/config.yml") as config_file:
+with open(f"{os.path.abspath(os.path.join(os.getcwd(), '../'))}/config/config.yml") as config_file:
     config = yaml.safe_load(config_file)
 print(config['window']['height'])
 print(config['window']['width'])
@@ -174,7 +175,7 @@ food_cells = np.zeros((20, 20), dtype=int)
 
 # np.savetxt("foo.csv", food_cells, fmt="%0d", delimiter=",")
 
-df = pd.read_csv(f'{os.getcwd()}/foo.csv', sep=',', header=None)
+df = pd.read_csv(f"{os.path.abspath(os.path.join(os.getcwd(), '../'))}/output/creatures.csv", sep=',', header=None)
 print(df.values)
 
 with open(f"{os.getcwd()}/output/creatures.csv") as csv_file:
@@ -190,7 +191,7 @@ with open(f"{os.getcwd()}/output/creatures.csv") as csv_file:
     print(f'Processed {line_count} lines.')
 
 # 导入sympy
-from sympy import *
+
 
 # 定义变量
 x = Symbol('x')
