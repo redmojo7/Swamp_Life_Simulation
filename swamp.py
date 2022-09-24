@@ -65,23 +65,6 @@ class Creature(object):  #
         self.x += moved_cells_x
         self.y += moved_cells_y
 
-    def step_change(self, my_map):
-        # before moving, check if there are some food around ** points (it depends on vision)
-        if my_map.foods and self.search_target(my_map.food_cells):
-            # to find the nearest one by calculating the Euclidean distance
-            # https://github.com/Rabbid76/PyGameExamplesAndAnswers/blob/master/documentation/pygame/pygame_math_vector_and_reflection.md
-            food = min([f for f in my_map.foods], key=lambda f: pow(f[0] - self.x, 2) + pow(f[1] - self.y, 2))
-            # move forward to food
-            print(f"Food was found! @ ({food[0]},{food[1]}) by {self}")
-            if food[0] == self.x and food[1] == self.y:
-                my_map.eat_food(food)
-                self.age -= 3
-            else:
-                self.move_to_target(food)
-        else:
-            # if there is no food around, then random running
-            self.random_run()
-
     # if target was found, return true
     # target is a numpy array
     def search_target(self, target):

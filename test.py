@@ -473,10 +473,18 @@ while True:
         screen.fill(COLOR_LAND)
         # draw_terrain()
         # show terrain
+        # Draws the sea and waves
+        '''
+        pygame.draw.rect(screen, COLOR_SEA, [0, LAND_HEIGHT, WIDTH, int(HEIGHT * 2 / 3)], 0)
+        for x_offset in range(0, WIDTH, 30):
+            pygame.draw.arc(screen, COLOR_WHITE, [0 + x_offset, LAND_HEIGHT - 10, 30, 30], PI / 2, PI, 12)
+            pygame.draw.arc(screen, COLOR_WHITE, [0 + x_offset, LAND_HEIGHT - 10, 30, 30], 0, PI / 2, 12)
+        '''
         for row in range(0, my_map.height - 1):
             for col in range(0, my_map.width - 1):
                 if my_map.mountains_cells[row, col] == 1:
                     screen.set_at((col, row), COLOR_DEEPGREEN)
+
 
         current_gen = next_generation()
         #
