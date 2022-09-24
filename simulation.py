@@ -2,6 +2,7 @@ import pygame
 import yaml
 
 from config import load_config, CREATURES_CSV
+from grid import add_baby, remove_died_creatures, update_cells
 from swamp import Duck, Shrimp, Newt
 import csv
 
@@ -88,3 +89,18 @@ def interactions(screen, simulation_running, my_font):
                 screen.blit(point_info, (10, 10))
                 pygame.display.update()
     return simulation_running
+
+
+def next_generation(generation, screen, my_map, my_font):
+    print("\n ### next generation ###")
+    generation += 1
+    # add baby into creatures list
+    add_baby(my_map)
+    # remove died creatures
+    remove_died_creatures(my_map)
+    # show the number of alive creatures
+    show_simulation_info(screen, my_font, generation, my_map)
+    # update cells for ducks, newts, shrimps
+    update_cells(screen, my_map)
+    # return generation
+    return generation

@@ -146,7 +146,7 @@ class Creature(object):  #
         self.velocity = int(velocity)
 
     def __str__(self):
-        return f"{self.state} {self.name} aged {self.age} @ ({self.x},{self.y} with velocity {self.velocity})"
+        return f"{self.state} {self.name} aged {self.age} @ ({self.x},{self.y}) with velocity {self.velocity}"
 
 
 class Duck(Creature):
