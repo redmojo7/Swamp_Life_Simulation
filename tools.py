@@ -15,6 +15,7 @@ from symtable import Symbol
 
 import numpy as np
 import random
+import string
 
 
 def manhattan_distance(point1, point2):
@@ -93,6 +94,7 @@ def get_edge_points(x1, y1, x2, y2, x3, y3):
     return points
 
 
+# Movement
 # Base on https://codeantenna.com/a/3dJOcMVl5F
 def trace(target, tracer, velocity):
     x1, y1 = tracer[0], tracer[1]
@@ -137,3 +139,7 @@ def random_position_in_water(width, land_height, height, mountains_cells):
         if mountains_cells[row, col] == 0:
             recreate = False
     return [col, row]
+
+
+def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
+    return ''.join(random.choice(chars) for _ in range(size))

@@ -102,6 +102,7 @@ def main():
         # that was returned by pygame.event.get() method.
         (simulation_running, program_running) = interactions(screen, simulation_running, my_font)
 
+        # Visualization
         if simulation_running:
             # completely fill the screen with initialing colour
             screen.fill(COLOR_LAND)

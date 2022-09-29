@@ -1,4 +1,3 @@
-
 # reproduce food with max number
 import random
 
@@ -10,6 +9,7 @@ COLOR_FOOD = (52, 140, 49)  # Grass
 grass_img = pygame.image.load('png/grass.png')
 
 
+# Non-moving objects
 def reproduce_food(number, screen, my_map):
     food_positions = []
     food_width = 5

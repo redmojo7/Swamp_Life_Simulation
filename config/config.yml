@@ -1,7 +1,7 @@
 creatures:
-  duck: 2
-  newt: 10
-  shrimp: 30
+  duck: 3
+  newt: 5
+  shrimp: 10
 generation: 5
 window:
   height: 500

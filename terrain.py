@@ -6,6 +6,7 @@ COLOR_DEEPGREEN = (77, 150, 50)  # mountains
 PI = 3.141592653
 
 
+# Terrain
 def draw_terrain(screen, my_map):
     LAND_HEIGHT = my_map.land_height
     WIDTH = my_map.width
@@ -16,12 +17,15 @@ def draw_terrain(screen, my_map):
         pygame.draw.arc(screen, COLOR_WHITE, [0 + x_offset, LAND_HEIGHT - 10, 30, 30], PI / 2, PI, 12)
         pygame.draw.arc(screen, COLOR_WHITE, [0 + x_offset, LAND_HEIGHT - 10, 30, 30], 0, PI / 2, 12)
 
+    # Draws mountains
     for row in range(0, my_map.height - 1):
         for col in range(0, my_map.width - 1):
             if my_map.mountains_cells[row, col] == 1:
                 screen.set_at((col, row), COLOR_DEEPGREEN)
 
 
+# should be removed
+'''
 def draw_terrain_old(screen, my_map):
     LAND_HEIGHT = my_map.land_height
     WIDTH = my_map.width
@@ -49,3 +53,4 @@ def draw_terrain_old(screen, my_map):
                          [int(0.2 * WIDTH), int(0.25 * HEIGHT)],
                          [int(0.4 * WIDTH), int(0.25 * HEIGHT)]], 0)
     # print(f"mountains on land :\n{[350, 50]},{[250, 150]},{[450, 150]}")
+'''

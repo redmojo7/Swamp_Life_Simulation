@@ -1,6 +1,7 @@
 from swamp import Duck, Shrimp, Newt
 
 
+# Boundaries
 def map_border_check(creature, width, height, land_height):
     # check left and right boarder for all creature
     if creature.x < 0:
@@ -21,7 +22,7 @@ def map_border_check(creature, width, height, land_height):
         # stay in water
         creature.y = land_height
 
-
+# Boundaries
 def mountains_border_check(pos_x, pos_y, creature, my_map):
     # find the nearst border point before moving
     [n_x, n_y] = min([t for t in my_map.mountains_borders],
@@ -60,6 +61,7 @@ def mountains_border_check(pos_x, pos_y, creature, my_map):
         print(f"new position: {creature.x}, {creature.y}")
 
 
+# Boundaries
 def step_check(pos_x, pos_y, creature, my_map):
     #
     map_border_check(creature, my_map.width, my_map.height, my_map.land_height)

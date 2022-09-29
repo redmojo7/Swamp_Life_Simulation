@@ -18,7 +18,7 @@ import random
 
 import numpy as np
 
-from tools import manhattan_distance, trace
+from tools import manhattan_distance, trace, id_generator
 
 
 class Creature(object):  #
@@ -34,7 +34,9 @@ class Creature(object):  #
         self.x = int(pos[0])
         self.y = int(pos[1])
         self.age = 0
+        self.nickname = id_generator()
 
+    # Movement
     # target is array [x,y]
     def move_to_target(self, target):
         print(f"{self} Move to target ({target[0]},{target[1]})")
@@ -42,6 +44,7 @@ class Creature(object):  #
         self.x = tracer[0]
         self.y = tracer[1]
 
+    # Movement
     def move_away_from(self, pos):
         print(f"{self} move away from {pos}")
         moved_cell_x = random.randint(0, self.velocity)
@@ -57,6 +60,7 @@ class Creature(object):  #
         else:
             self.y -= moved_cell_y
 
+    # Movement
     # random run(max is velocity, total distance(Manhattan) on x and y)
     def random_run(self):
         moved_cells_x = random.randint(-self.velocity, self.velocity)
@@ -93,6 +97,7 @@ class Creature(object):  #
         print(f"{self} is eating food @ {food_pos}")
         my_map.remove_foods(food_pos)
 
+    # Movement
     def track_newts(self, my_map, newt_pos):
         # move forward to newts
         print(f"Newt was found! @ ({newt_pos}) by {self}")
@@ -106,6 +111,7 @@ class Creature(object):  #
         else:
             self.move_to_target(newt_pos)
 
+    # Movement
     def track_shrimp(self, my_map, shrimp_pos):
         # move forward to newts
         print(f"Shrimp was found! @ ({shrimp_pos}) by {self}")
@@ -119,6 +125,7 @@ class Creature(object):  #
         else:
             self.move_to_target(shrimp_pos)
 
+    # Movement
     def track_food(self, my_map, food_pos):
         # move forward to newts
         print(f"Food was found! @ ({food_pos}) by {self}")
@@ -146,7 +153,7 @@ class Creature(object):  #
         self.velocity = int(velocity)
 
     def __str__(self):
-        return f"{self.state} {self.name} aged {self.age} @ ({self.x},{self.y}) with velocity {self.velocity}"
+        return f"{self.state} {self.name}({self.nickname}) aged {self.age} @ ({self.x},{self.y}) with velocity {self.velocity}"
 
 
 class Duck(Creature):
@@ -164,6 +171,7 @@ class Duck(Creature):
         self.vision = 200  # can see food from max 40 points away
         print(f"Init {self}")
 
+    # Movement
     def step_change(self, my_map):
         # change age, state, velocity, ect...
         self.change_status(my_map)
@@ -192,6 +200,7 @@ class Duck(Creature):
             if random.random() < 0.01 / math.log2(
                     len(my_map.ducks_list) + 2):  # (0.01/log2(num+1))% chance to lay eggs for adult
                 self.eggs = [self.x, self.y]
+            # Lifecycles
             if self.age > self.time_2_death:  # death
                 self.state = self.DEATH
         # Ducks can run around 6-8 miles per hour
@@ -223,9 +232,11 @@ class Newt(Creature):
         self.vision = 150  # can see food from max 40 points away
         print(f"Init {self}")
 
+    # Movement
     def step_change(self, my_map):
         # change age, state, velocity, ect...
         self.age += 1
+        # Lifecycles
         if self.age > self.time_2_death:  # death
             self.state = self.DEATH
         if self.state == self.EGG and self.age >= self.TIME_2_HATCH:  # ready to HATCH
@@ -270,9 +281,11 @@ class Shrimp(Creature):
         self.vision = 80  # can see food from max 40 points away
         print(f"Init {self}")
 
+    # Movement
     def step_change(self, my_map):
         # change age, state, velocity, ect...
         self.age += 1
+        # Lifecycles
         if self.age > self.time_2_death:  # death
             self.state = self.DEATH
         if self.state == self.EGG and self.age >= self.TIME_2_HATCH:  # ready to HATCH
