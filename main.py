@@ -17,7 +17,7 @@ from terrain import draw_terrain
 from grass import reproduce_food
 from map import Map
 from swamp import Duck, Shrimp, Newt
-from simulation import restore, save_states, interactions, next_generation
+from simulation import restore, save_states, interactions, next_generation, restore_asking
 from tools import random_position_in_water, random_position
 
 # load configuration
@@ -39,14 +39,13 @@ NUM_DUCK = config['creatures']['duck']
 NUM_NEWT = config['creatures']['newt']
 NUM_SHRIMP = config['creatures']['shrimp']
 
-# if it needs to restore simulation
-need_restore = config['need_restore']
-
 # set colors
 COLOR_LAND = (242, 191, 141)
 
-
 def main():
+
+    need_restore = restore_asking()
+
     # generation is 0
     generation = 0
 
@@ -74,7 +73,8 @@ def main():
     newts = []
     shrimps = []
 
-    if need_restore is True:
+    # if it needs to restore simulation
+    if need_restore:
         # reset generation
         generation = config['generation']
         restore(ducks, newts, shrimps)
@@ -100,7 +100,7 @@ def main():
 
         # iterate over the list of Event objects
         # that was returned by pygame.event.get() method.
-        simulation_running = interactions(screen, simulation_running, my_font)
+        (simulation_running, program_running) = interactions(screen, simulation_running, my_font)
 
         if simulation_running:
             # completely fill the screen with initialing colour

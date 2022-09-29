@@ -1,3 +1,5 @@
+import os
+
 import pygame
 import yaml
 
@@ -7,6 +9,18 @@ from swamp import Duck, Shrimp, Newt
 import csv
 
 config = load_config()
+
+
+def restore_asking():
+    need_restore = False
+    if os.path.exists(CREATURES_CSV) and os.stat(CREATURES_CSV).st_size != 0:
+        key = input('\nDo you want restore simulation? y/n\n')
+        if key.upper() == 'Y':
+            input("your choose to restore the simulation. Click any key to continue.\n")
+            need_restore = True
+        else:
+            input("Dont restore the simulation. Click any key to continue.\n")
+    return need_restore
 
 
 def restore(ducks, newts, shrimps):
