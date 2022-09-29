@@ -83,6 +83,7 @@ COLOR_LAND = (242, 191, 141)
 
 
 def interactions(screen, simulation_running, my_font):
+    program_running = True
     for event in pygame.event.get():
         # if event object type is QUIT
         # then quitting the pygame
@@ -102,7 +103,7 @@ def interactions(screen, simulation_running, my_font):
                 screen.fill(COLOR_LAND, (10, 10, 100, 20))
                 screen.blit(point_info, (10, 10))
                 pygame.display.update()
-    return simulation_running
+    return (simulation_running, program_running)
 
 
 def next_generation(generation, screen, my_map, my_font):
