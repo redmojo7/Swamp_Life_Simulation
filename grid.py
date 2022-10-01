@@ -20,7 +20,7 @@ def update_cells(screen, my_map):
 
 def update_cells_4_shrimps(screen, my_map):
     if not my_map.shrimps_list:
-        print("all shrimps die")
+        print("all shrimps died")
     for shrimp in my_map.shrimps_list:
         x = shrimp.x
         y = shrimp.y
@@ -31,7 +31,7 @@ def update_cells_4_shrimps(screen, my_map):
         y_moved = shrimp.y
         width = shrimp.get_size() - 1
         height = shrimp.get_size() - 1
-        print(f"shrimp moved from position ({x},{y}) to position: "
+        print(f"{shrimp} moved from position ({x},{y}) to position: "
               f"({x_moved},{y_moved}) with size {shrimp.get_size()} ")
         scaled_shrimp_img = pygame.transform.scale(shrimp_img, (width, height))
         screen.blit(scaled_shrimp_img, (x_moved, y_moved))
@@ -39,7 +39,7 @@ def update_cells_4_shrimps(screen, my_map):
 
 def update_cells_4_newts(screen, my_map):
     if not my_map.newts_list:
-        print("all newts die")
+        print("all newts died")
     for newt in my_map.newts_list:
         x = newt.x
         y = newt.y
@@ -51,7 +51,7 @@ def update_cells_4_newts(screen, my_map):
         width = newt.get_size() - 1
         height = newt.get_size() - 1
         print(
-            f"newt moved from position ({x},{y}) to position: "
+            f"{newt} moved from position ({x},{y}) to position: "
             f"({x_moved},{y_moved}) with size {newt.get_size()} ")
         # pygame.draw.rect(screen, color, (col_moved, row_moved, width, height))
         scaled_newt_img = pygame.transform.scale(newt_img, (width, height))
@@ -59,6 +59,8 @@ def update_cells_4_newts(screen, my_map):
 
 
 def update_cells_4_ducks(screen, my_map):
+    if not my_map.ducks_list:
+        print("all ducks died")
     # iterate all alive duck
     for duck in my_map.ducks_list:
         x = duck.x
@@ -70,7 +72,7 @@ def update_cells_4_ducks(screen, my_map):
         y_moved = duck.y
         width = duck.get_size() - 1
         height = duck.get_size() - 1
-        print(f"duck moved from position ({x},{y}) to position: "
+        print(f"{duck} moved from position ({x},{y}) to position: "
               f"({x_moved},{y_moved}) with size {duck.get_size()} ")
         # pygame.draw.rect(screen, COLOR_DUCK, (col_moved, row_moved, width, height))
         if duck.state != duck.DEATH:

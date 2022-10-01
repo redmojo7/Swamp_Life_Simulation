@@ -58,7 +58,7 @@ def mountains_border_check(pos_x, pos_y, creature, my_map):
                 if row < n_y:
                     creature.y = n_y - creature.velocity
                     break
-        print(f"new position: {creature.x}, {creature.y}")
+        print(f"Reached mountains! new position: {creature.x}, {creature.y}")
 
 
 # Boundaries

@@ -198,11 +198,12 @@ class Duck(Creature):
             if self.velocity == 10 and self.age >= self.TIME_2_AGED:  # old
                 self.velocity = 5
             if random.random() < 0.01 / math.log2(
-                    len(my_map.ducks_list) + 2):  # (0.01/log2(num+1))% chance to lay eggs for adult
+                    len(my_map.ducks_list) + 2):  # (0.01/log2(num+2))% chance to lay eggs for adult
                 self.eggs = [self.x, self.y]
             # Lifecycles
             if self.age > self.time_2_death:  # death
                 self.state = self.DEATH
+                print(f"{self} died.")
         # Ducks can run around 6-8 miles per hour
         # Ducks can swim up to 6 miles per hour
         # Is the duck on land?
@@ -239,6 +240,7 @@ class Newt(Creature):
         # Lifecycles
         if self.age > self.time_2_death:  # death
             self.state = self.DEATH
+            print(f"{self} died.")
         if self.state == self.EGG and self.age >= self.TIME_2_HATCH:  # ready to HATCH
             self.state = self.ADULT
         if random.random() < 0.03 / math.log2(
@@ -288,6 +290,7 @@ class Shrimp(Creature):
         # Lifecycles
         if self.age > self.time_2_death:  # death
             self.state = self.DEATH
+            print(f"{self} died.")
         if self.state == self.EGG and self.age >= self.TIME_2_HATCH:  # ready to HATCH
             self.state = self.ADULT
         if random.random() < 0.05 / math.log2(

@@ -16,10 +16,10 @@ def restore_asking():
     if os.path.exists(CREATURES_CSV) and os.stat(CREATURES_CSV).st_size != 0:
         key = input('\nDo you want restore simulation? y/n\n')
         if key.upper() == 'Y':
-            input("your choose to restore the simulation. Click any key to continue.\n")
+            input("your choose to restore the simulation. Click 'Enter'  to continue.\n")
             need_restore = True
         else:
-            input("Dont restore the simulation. Click any key to continue.\n")
+            input("Dont restore the simulation. Click 'Enter' to continue.\n")
     return need_restore
 
 
@@ -95,6 +95,10 @@ def interactions(screen, simulation_running, my_font):
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
             # pause or restart simulation
             simulation_running = not simulation_running
+            if simulation_running:
+                pygame.display.set_caption("Swamp Life Simulation")
+            else:
+                pygame.display.set_caption("Swamp Life Simulation(Pause)")
         elif event.type == pygame.MOUSEMOTION:
             if pygame.mouse.get_pos()[0]:
                 pos = pygame.mouse.get_pos()
@@ -107,7 +111,7 @@ def interactions(screen, simulation_running, my_font):
 
 
 def next_generation(generation, screen, my_map, my_font):
-    print("\n ### next generation ###")
+    print(f"\n ### next generation {generation} ###")
     generation += 1
     # add baby into creatures list
     add_baby(my_map)

@@ -102,6 +102,11 @@ def main():
         # that was returned by pygame.event.get() method.
         (simulation_running, program_running) = interactions(screen, simulation_running, my_font)
 
+        # if all died, the quit
+        if (not my_map.ducks_list) and (not my_map.newts_list) and (not my_map.shrimps_list):
+            print("All creatures died. Simulation Finished")
+            simulation_running = False
+            program_running = False
         # Visualization
         if simulation_running:
             # completely fill the screen with initialing colour
