@@ -168,7 +168,7 @@ class Duck(Creature):
         super().__init__(pos)  # Call parent __init__
         self.state = self.EGG
         self.velocity = self.VELOCITY_SWIMMING  # velocity / speed of movement
-        self.vision = 200  # can see food from max 40 points away
+        self.vision = 80  # can see food from max 40 points away
         print(f"Init {self}")
 
     # Movement
@@ -230,7 +230,7 @@ class Newt(Creature):
         super().__init__(pos)  # Call parent __init__
         self.velocity = 15
         self.size = 15
-        self.vision = 150  # can see food from max 40 points away
+        self.vision = 60  # can see food from max 40 points away
         print(f"Init {self}")
 
     # Movement
@@ -251,6 +251,7 @@ class Newt(Creature):
             # before moving, check if there are some Duck around * points (it depends on vision)
             duck_pos = self.search_nearst_target(my_map.get_ducks_pos())
             if duck_pos:
+                print(f"Predictor Duck was found! @ ({duck_pos}) by {self}")
                 self.move_away_from(duck_pos)
             else:
                 # check if there are some shrimps around * points (it depends on vision)
@@ -280,7 +281,7 @@ class Shrimp(Creature):
         super().__init__(pos)  # Call parent __init__
         self.velocity = 5
         self.size = 8
-        self.vision = 80  # can see food from max 40 points away
+        self.vision = 40  # can see food from max 40 points away
         print(f"Init {self}")
 
     # Movement
@@ -301,6 +302,7 @@ class Shrimp(Creature):
             # before moving, check if there are some Duck around * points (it depends on vision)
             predictor_pos = self.search_nearst_target(my_map.get_ducks_pos() + my_map.get_newts_pos())
             if predictor_pos:
+                print(f"Predictor Duck/Newt was found! @ ({predictor_pos}) by {self}")
                 self.move_away_from(predictor_pos)
             else:
                 # before moving, check if there are some foods around * points (it depends on vision)
