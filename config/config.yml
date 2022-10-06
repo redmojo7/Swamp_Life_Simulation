@@ -6,3 +6,5 @@ generation: 5
 window:
   height: 500
   width: 1000
+land:
+  height: 166

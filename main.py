@@ -30,7 +30,7 @@ if not path.exists('output'):
 
 # window size
 HEIGHT = config['window']['height']
-LAND_HEIGHT = int(HEIGHT / 3)
+LAND_HEIGHT = config['land']['height']  #int(HEIGHT / 3)
 WIDTH = config['window']['width']
 
 # creatures
