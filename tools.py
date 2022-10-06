@@ -118,28 +118,5 @@ def trace(target, tracer, velocity):
     return [x1, y1]
 
 
-# return a random position [x,y]
-def random_position(width, height, mountains_cells):
-    # keep away from the boarder, at least 10 points
-    recreate = True
-    while recreate:
-        [col, row] = [random.randint(0, width - 10), random.randint(0, height - 10)]
-        # but not on the mountain
-        if mountains_cells[row, col] == 0:
-            recreate = False
-    return [col, row]
-
-
-def random_position_in_water(width, land_height, height, mountains_cells):
-    # keep away from the boarder, at least 10 points
-    recreate = True
-    while recreate:
-        [col, row] = [random.randint(0, width - 10), random.randint(land_height, height - 10)]
-        # but not on the mountain
-        if mountains_cells[row, col] == 0:
-            recreate = False
-    return [col, row]
-
-
 def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))

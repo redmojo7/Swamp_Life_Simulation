@@ -1,7 +1,7 @@
 # reproduce food with max number
 import random
-
 import pygame
+from terrain import random_position_in_water
 
 import tools
 
@@ -23,7 +23,7 @@ def reproduce_food(number, screen, my_map):
         if random.random() > 0.5:
             return
         for index in range(number):  # range(random.randint(1, number)):
-            [x, y] = tools.random_position_in_water(WIDTH, LAND_HEIGHT, HEIGHT, my_map.mountains_cells)
+            [x, y] = random_position_in_water(my_map)
             food_positions.append([x, y])
             print(f"Food was produced at ({x}, {y})")
         # add foods to map

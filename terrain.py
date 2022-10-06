@@ -1,4 +1,5 @@
 import pygame
+import random
 
 COLOR_SEA = (141, 213, 242)
 COLOR_WHITE = (255, 255, 255)
@@ -23,6 +24,32 @@ def draw_terrain(screen, my_map):
             if my_map.mountains_cells[row, col] == 1:
                 screen.set_at((col, row), COLOR_DEEPGREEN)
 
+
+
+# return a random position [x,y]
+def random_position(my_map):
+    # keep away from the boarder, at least 10 points
+    recreate = True
+    while recreate:
+        [col, row] = [random.randint(0, my_map.width - 10),
+                      random.randint(0, my_map.height - 10)]
+        # but not on the mountain
+        if my_map.mountains_cells[row, col] == 0:
+            recreate = False
+    return [col, row]
+
+
+# return a random position [x,y]
+def random_position_in_water(my_map):
+    # keep away from the boarder, at least 10 points
+    recreate = True
+    while recreate:
+        [col, row] = [random.randint(0, my_map.width - 10),
+                      random.randint(my_map.land_height, my_map.height - 10)]
+        # but not on the mountain
+        if my_map.mountains_cells[row, col] == 0:
+            recreate = False
+    return [col, row]
 
 # should be removed
 '''

@@ -13,12 +13,11 @@ import pygame
 import os.path
 from os import path
 from config import load_config
-from terrain import draw_terrain
+from terrain import draw_terrain, random_position_in_water, random_position
 from grass import reproduce_food
 from map import Map
 from swamp import Duck, Shrimp, Newt
 from simulation import restore, save_states, interactions, next_generation, restore_asking
-from tools import random_position_in_water, random_position
 
 # load configuration
 config = load_config()
@@ -42,8 +41,8 @@ NUM_SHRIMP = config['creatures']['shrimp']
 # set colors
 COLOR_LAND = (242, 191, 141)
 
-def main():
 
+def main():
     need_restore = restore_asking()
 
     # generation is 0
@@ -80,10 +79,9 @@ def main():
         restore(ducks, newts, shrimps)
     else:
         # Initialing Creatures
-        [ducks.append(Duck(random_position(WIDTH, HEIGHT, my_map.mountains_cells))) for i in range(NUM_DUCK)]
-        [newts.append(Newt(random_position(WIDTH, HEIGHT, my_map.mountains_cells))) for i in range(NUM_NEWT)]
-        [shrimps.append(Shrimp(random_position_in_water(WIDTH, LAND_HEIGHT, HEIGHT, my_map.mountains_cells))) for i in
-         range(NUM_SHRIMP)]
+        [ducks.append(Duck(random_position(my_map))) for i in range(NUM_DUCK)]
+        [newts.append(Newt(random_position(my_map))) for i in range(NUM_NEWT)]
+        [shrimps.append(Shrimp(random_position_in_water(my_map))) for i in range(NUM_SHRIMP)]
 
     my_map.add_creatures(ducks)
     my_map.add_creatures(newts)
