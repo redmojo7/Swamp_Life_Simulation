@@ -1,15 +1,15 @@
 # Swamp Life Simulation
 ## Contents
-- border.py - 
-- config.py	-
-- grid.py - 		
-- map.py - 	
-- swamp.py - 
-- grass.py - 	
-- main.py - 	
-- simulation.py - 
-- terrain.py - 	
-- tools.py - 
+- border.py - Boundaries: Stop the beings going beyond the grid(window).
+- config.py	- Configration file initialize windows size and number of creatures.
+- grid.py - Move creatures(update cells), add new creatures and remove died creartures.
+- map.py - The map of this simulation, which include mountains position and all alive creatures
+- swamp.py - Definition of class Creature, Duck, Newt and Shrimp.
+- grass.py - 	To reproduce soome grass(food).
+- main.py - Entry point, the main function of Simulation.
+- simulation.py - Show simulation info on screen, store app states for each step, and resume simulation from a CSV file.
+- terrain.py - Initial terrain for the map, and draw terrain on the screen.
+- tools.py - Some tools function, such as manhattan_distance()
 ## others
 - png - image directory 			
 - test - test directory		
