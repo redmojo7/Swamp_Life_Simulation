@@ -8,3 +8,5 @@ window:
   width: 1000
 land:
   height: 166
+mountains:
+  inSea: 4

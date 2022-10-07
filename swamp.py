@@ -180,8 +180,8 @@ class Duck(Creature):
             # before moving, check if there are some newts or shrimps around * points (it depends on vision)
             # if self.saw_alive_newts(my_map):
             newt_pos = self.search_nearst_target(my_map.get_newts_pos())
-            # 30% of chance it wants to eat some foods
-            if newt_pos and random.random() > 0.3:
+            #
+            if newt_pos:
                 self.track_newts(my_map, newt_pos)
             else:
                 shrimp_pos = self.search_nearst_target(my_map.get_shrimps_pos())
@@ -256,8 +256,8 @@ class Newt(Creature):
             else:
                 # check if there are some shrimps around * points (it depends on vision)
                 shrimp_pos = self.search_nearst_target(my_map.get_shrimps_pos())
-                # 50% of chance it wants to eat some foods
-                if shrimp_pos and random.random() > 0.4:
+                #
+                if shrimp_pos:
                     self.track_shrimp(my_map, shrimp_pos)
                 else:  # don't found any newts or shrimps
                     super().random_run()  # Call parent step_change

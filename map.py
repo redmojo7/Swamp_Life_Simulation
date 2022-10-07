@@ -128,32 +128,3 @@ class Map:
         for shrimp in self.shrimps_list:
             shrimps_cells[shrimp.y, shrimp.x] = 1
         return shrimps_cells
-
-    def initial_terrain(self):
-        # Initialing lands
-        self.set_lands()
-
-        # Initialing mountains
-        # triangle (top_middle, left_bottom, right_bottom)
-        # Draws the mountains in sea
-        EXPANDED_POINT = 15
-        WIDTH = self.width
-        HEIGHT = self.height
-        for x_offset in range(int(0.125 * WIDTH), int(0.625 * WIDTH), int(WIDTH / 6)):
-            print(f"Initialing mountains in sea :\n "
-                  f"{[int(0.125 * WIDTH) + x_offset, int(0.55 * HEIGHT) - EXPANDED_POINT]},"
-                  f"{[0 + x_offset - EXPANDED_POINT, int(0.75 * HEIGHT) + EXPANDED_POINT]},"
-                  f"{[int(0.25 * WIDTH) + x_offset + EXPANDED_POINT, int(0.75 * HEIGHT) + EXPANDED_POINT]}")
-            self.set_mountains(int(0.125 * WIDTH) + x_offset, int(0.55 * HEIGHT) - EXPANDED_POINT,
-                               0 + x_offset - EXPANDED_POINT, int(0.75 * HEIGHT) + EXPANDED_POINT,
-                               int(0.25 * WIDTH) + x_offset + EXPANDED_POINT, int(0.75 * HEIGHT) + EXPANDED_POINT)
-
-        # Draws mountains on land (extend mountains for 10 points for each side)
-
-        self.set_mountains(int(0.3 * WIDTH), int(0.08 * HEIGHT) - EXPANDED_POINT,
-                           int(0.2 * WIDTH) - EXPANDED_POINT, int(0.25 * HEIGHT) + EXPANDED_POINT,
-                           int(0.4 * WIDTH) + EXPANDED_POINT, int(0.25 * HEIGHT) + EXPANDED_POINT)
-        print(f"Initialing mountains on land :\n"
-              f"{[int(0.3 * WIDTH), int(0.08 * HEIGHT) - EXPANDED_POINT]},"
-              f"{[int(0.2 * WIDTH) - EXPANDED_POINT, int(0.25 * HEIGHT) + EXPANDED_POINT]},"
-              f"{[int(0.4 * WIDTH) + EXPANDED_POINT, int(0.25 * HEIGHT) + EXPANDED_POINT]}")

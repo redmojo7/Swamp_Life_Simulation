@@ -56,6 +56,7 @@ def save_states(generation, my_map):
     with open(CREATURES_CSV, 'w', newline='') as f:
         writer = csv.writer(f)
         for d in my_map.ducks_list + my_map.newts_list + my_map.shrimps_list:
+            # name, age, state, size, velocity
             writer.writerow([d.name, d.age, d.state, d.get_size(), d.velocity, d.x, d.y])
 
 

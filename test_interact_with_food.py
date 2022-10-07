@@ -30,7 +30,7 @@ if not path.exists('output'):
 
 # window size
 HEIGHT = config['window']['height']
-LAND_HEIGHT = config['land']['height']  #int(HEIGHT / 3)
+LAND_HEIGHT = config['land']['height']  # int(HEIGHT / 3)
 WIDTH = config['window']['width']
 
 # creatures
@@ -96,9 +96,46 @@ def main():
         # Creates time delay of 10ms
         pygame.time.delay(800)
 
-        # iterate over the list of Event objects
-        # that was returned by pygame.event.get() method.
-        (simulation_running, program_running) = interactions(screen, simulation_running, my_font)
+        for event in pygame.event.get():
+            # if event object type is QUIT
+            # then quitting the pygame
+            # and program both.
+            if event.type == pygame.QUIT:
+                # it will make exit the while loop
+                simulation_running = False
+                program_running = False
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                # pause or restart simulation
+                simulation_running = not simulation_running
+                if simulation_running:
+                    pygame.display.set_caption("Swamp Life Simulation")
+                else:
+                    pygame.display.set_caption("Swamp Life Simulation(Pause)")
+            elif event.type == pygame.MOUSEMOTION:
+                if pygame.mouse.get_pos()[0]:
+                    pos = pygame.mouse.get_pos()
+                    print(f"mouse was clicked at ({pos})")
+                    point_info = my_font.render(f"point : {pos}", False, (0, 0, 0))
+                    screen.fill(COLOR_LAND, (10, 10, 100, 20))
+                    screen.blit(point_info, (10, 10))
+
+                    # mouse as a duck
+                    # my_map.ducks_list = []
+                    # duck = Duck(pos)
+                    # duck.age = 5
+                    # my_map.add_creatures([duck])
+
+                    # mouse as a newt
+                    my_map.newts_list = []
+                    n = Newt(pos)
+                    n.set_attributes(10, "adult", 15, 15)
+                    my_map.add_creatures([n])
+
+                    # mouse as a shrimp
+                    # my_map.shrimps_list = []
+                    # my_map.add_creatures([Shrimp(pos)])
+
+                    pygame.display.update()
 
         # if all died, the quit
         if (not my_map.ducks_list) and (not my_map.newts_list) and (not my_map.shrimps_list):
