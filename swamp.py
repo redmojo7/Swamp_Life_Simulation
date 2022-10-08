@@ -100,7 +100,7 @@ class Creature(object):  #
     # Movement
     def track_newts(self, my_map, newt_pos):
         # move forward to newts
-        print(f"Newt was found! @ ({newt_pos}) by {self}")
+        print(f"Newt was found! @ ({newt_pos}) by {self}. (distance={manhattan_distance([self.x,self.y],newt_pos)})")
         # if the distance is under a velocity?
         if self.under_one_step(newt_pos):
             # move to target and eat it
@@ -114,7 +114,7 @@ class Creature(object):  #
     # Movement
     def track_shrimp(self, my_map, shrimp_pos):
         # move forward to newts
-        print(f"Shrimp was found! @ ({shrimp_pos}) by {self}")
+        print(f"Shrimp was found! @ ({shrimp_pos}) by {self}. (distance={manhattan_distance([self.x,self.y],shrimp_pos)})")
         # if the distance is under a velocity?
         if self.under_one_step(shrimp_pos):
             # move to target and eat it
@@ -128,7 +128,7 @@ class Creature(object):  #
     # Movement
     def track_food(self, my_map, food_pos):
         # move forward to newts
-        print(f"Food was found! @ ({food_pos}) by {self}")
+        print(f"Food was found! @ ({food_pos}) by {self}. (distance={manhattan_distance([self.x,self.y],food_pos)})")
         # if the distance is under a velocity?
         if self.under_one_step(food_pos):
             # move to target and eat it
@@ -153,7 +153,8 @@ class Creature(object):  #
         self.velocity = int(velocity)
 
     def __str__(self):
-        return f"{self.state} {self.name}({self.nickname}) aged {self.age} @ ({self.x},{self.y}) with velocity {self.velocity}"
+        return f"{self.state} {self.name}({self.nickname}) aged {self.age} @ ({self.x},{self.y}) " \
+               f"with velocity:{self.velocity} vision:{self.vision}"
 
 
 class Duck(Creature):
@@ -251,7 +252,7 @@ class Newt(Creature):
             # before moving, check if there are some Duck around * points (it depends on vision)
             duck_pos = self.search_nearst_target(my_map.get_ducks_pos())
             if duck_pos:
-                print(f"Predictor Duck was found! @ ({duck_pos}) by {self}")
+                print(f"Predictor Duck was found! @ ({duck_pos}) by {self}. (distance={manhattan_distance([self.x,self.y],duck_pos)})")
                 self.move_away_from(duck_pos)
             else:
                 # check if there are some shrimps around * points (it depends on vision)
@@ -302,7 +303,7 @@ class Shrimp(Creature):
             # before moving, check if there are some Duck around * points (it depends on vision)
             predictor_pos = self.search_nearst_target(my_map.get_ducks_pos() + my_map.get_newts_pos())
             if predictor_pos:
-                print(f"Predictor Duck/Newt was found! @ ({predictor_pos}) by {self}")
+                print(f"Predictor Duck/Newt was found! @ ({predictor_pos}) by {self}. (distance={manhattan_distance([self.x,self.y],predictor_pos)})")
                 self.move_away_from(predictor_pos)
             else:
                 # before moving, check if there are some foods around * points (it depends on vision)

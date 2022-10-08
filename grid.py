@@ -31,7 +31,7 @@ def update_cells_4_shrimps(screen, my_map):
         y_moved = shrimp.y
         width = shrimp.get_size() - 1
         height = shrimp.get_size() - 1
-        print(f"{shrimp} moved from position ({x},{y}) to position: "
+        print(f"{shrimp} moved from ({x},{y}) to : "
               f"({x_moved},{y_moved}) with size {shrimp.get_size()} ")
         scaled_shrimp_img = pygame.transform.scale(shrimp_img, (width, height))
         screen.blit(scaled_shrimp_img, (x_moved, y_moved))
@@ -51,7 +51,7 @@ def update_cells_4_newts(screen, my_map):
         width = newt.get_size() - 1
         height = newt.get_size() - 1
         print(
-            f"{newt} moved from position ({x},{y}) to position: "
+            f"{newt} moved from ({x},{y}) to : "
             f"({x_moved},{y_moved}) with size {newt.get_size()} ")
         # pygame.draw.rect(screen, color, (col_moved, row_moved, width, height))
         scaled_newt_img = pygame.transform.scale(newt_img, (width, height))
@@ -72,7 +72,7 @@ def update_cells_4_ducks(screen, my_map):
         y_moved = duck.y
         width = duck.get_size() - 1
         height = duck.get_size() - 1
-        print(f"{duck} moved from position ({x},{y}) to position: "
+        print(f"{duck} moved from ({x},{y}) to : "
               f"({x_moved},{y_moved}) with size {duck.get_size()} ")
         # pygame.draw.rect(screen, COLOR_DUCK, (col_moved, row_moved, width, height))
         if duck.state != duck.DEATH:
