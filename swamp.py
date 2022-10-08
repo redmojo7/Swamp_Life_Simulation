@@ -82,63 +82,6 @@ class Creature(object):  #
     def under_one_step(self, position):
         return manhattan_distance([self.x, self.y], position) <= self.velocity
 
-    # eat a newt
-    def eat_newt(self, my_map, newt_pos):
-        print(f"{self} is eating newts @ {newt_pos}")
-        my_map.remove_newt(newt_pos)
-
-    # eat a shrimp
-    def eat_shrimp(self, my_map, shrimp_pos):
-        print(f"{self} is eating shrimp @ {shrimp_pos}")
-        my_map.remove_shrimps(shrimp_pos)
-
-    # eat a food
-    def eat_food(self, my_map, food_pos):
-        print(f"{self} is eating food @ {food_pos}")
-        my_map.remove_foods(food_pos)
-
-    # Movement
-    def track_newts(self, my_map, newt_pos):
-        # move forward to newts
-        print(f"Newt was found! @ ({newt_pos}) by {self}. (distance={manhattan_distance([self.x,self.y],newt_pos)})")
-        # if the distance is under a velocity?
-        if self.under_one_step(newt_pos):
-            # move to target and eat it
-            self.x = newt_pos[0]
-            self.y = newt_pos[1]
-            self.eat_newt(my_map, newt_pos)
-            self.time_2_death += 2  # live longer
-        else:
-            self.move_to_target(newt_pos)
-
-    # Movement
-    def track_shrimp(self, my_map, shrimp_pos):
-        # move forward to newts
-        print(f"Shrimp was found! @ ({shrimp_pos}) by {self}. (distance={manhattan_distance([self.x,self.y],shrimp_pos)})")
-        # if the distance is under a velocity?
-        if self.under_one_step(shrimp_pos):
-            # move to target and eat it
-            self.x = shrimp_pos[0]
-            self.y = shrimp_pos[1]
-            self.eat_shrimp(my_map, shrimp_pos)
-            self.time_2_death += 1  # live longer
-        else:
-            self.move_to_target(shrimp_pos)
-
-    # Movement
-    def track_food(self, my_map, food_pos):
-        # move forward to newts
-        print(f"Food was found! @ ({food_pos}) by {self}. (distance={manhattan_distance([self.x,self.y],food_pos)})")
-        # if the distance is under a velocity?
-        if self.under_one_step(food_pos):
-            # move to target and eat it
-            self.x = food_pos[0]
-            self.y = food_pos[1]
-            self.eat_food(my_map, food_pos)
-            self.time_2_death += 5  # live longer
-        else:
-            self.move_to_target(food_pos)
-
     def in_water(self, my_map):
         # my_map.lands_cells[row, col] == 0
         return my_map.lands_cells[self.y, self.x] == 0
@@ -183,7 +126,7 @@ class Duck(Creature):
             newt_pos = self.search_nearst_target(my_map.get_newts_pos())
             #
             if newt_pos:
-                self.track_newts(my_map, newt_pos)
+                self.track_newt(my_map, newt_pos)
             else:
                 shrimp_pos = self.search_nearst_target(my_map.get_shrimps_pos())
                 if shrimp_pos:
@@ -220,6 +163,46 @@ class Duck(Creature):
             size = 25
         return size
 
+        # Movement
+
+    def track_newt(self, my_map, newt_pos):
+        # move forward to newts
+        print(f"Newt was found! @ ({newt_pos}) by {self}. (distance={manhattan_distance([self.x, self.y], newt_pos)})")
+        # if the distance is under a velocity?
+        if self.under_one_step(newt_pos):
+            # move to target and eat it
+            self.x = newt_pos[0]
+            self.y = newt_pos[1]
+            self.eat_newt(my_map, newt_pos)
+            self.time_2_death += 2  # live longer
+        else:
+            self.move_to_target(newt_pos)
+
+    # Movement
+    def track_shrimp(self, my_map, shrimp_pos):
+        # move forward to newts
+        print(
+            f"Shrimp was found! @ ({shrimp_pos}) by {self}. (distance={manhattan_distance([self.x, self.y], shrimp_pos)})")
+        # if the distance is under a velocity?
+        if self.under_one_step(shrimp_pos):
+            # move to target and eat it
+            self.x = shrimp_pos[0]
+            self.y = shrimp_pos[1]
+            self.eat_shrimp(my_map, shrimp_pos)
+            self.time_2_death += 1  # live longer
+        else:
+            self.move_to_target(shrimp_pos)
+
+    # Interaction eat a newt
+    def eat_newt(self, my_map, newt_pos):
+        print(f"{self} is eating newts @ {newt_pos}")
+        my_map.remove_newt(newt_pos)
+
+    # Interaction  eat a shrimp
+    def eat_shrimp(self, my_map, shrimp_pos):
+        print(f"{self} is eating shrimp @ {shrimp_pos}")
+        my_map.remove_shrimps(shrimp_pos)
+
 
 class Newt(Creature):
     TIME_2_HATCH = 5
@@ -252,7 +235,8 @@ class Newt(Creature):
             # before moving, check if there are some Duck around * points (it depends on vision)
             duck_pos = self.search_nearst_target(my_map.get_ducks_pos())
             if duck_pos:
-                print(f"Predictor Duck was found! @ ({duck_pos}) by {self}. (distance={manhattan_distance([self.x,self.y],duck_pos)})")
+                print(
+                    f"Predictor Duck was found! @ ({duck_pos}) by {self}. (distance={manhattan_distance([self.x, self.y], duck_pos)})")
                 self.move_away_from(duck_pos)
             else:
                 # check if there are some shrimps around * points (it depends on vision)
@@ -269,6 +253,26 @@ class Newt(Creature):
         else:
             size = 15
         return size
+
+    # Movement
+    def track_shrimp(self, my_map, shrimp_pos):
+        # move forward to newts
+        print(
+            f"Shrimp was found! @ ({shrimp_pos}) by {self}. (distance={manhattan_distance([self.x, self.y], shrimp_pos)})")
+        # if the distance is under a velocity?
+        if self.under_one_step(shrimp_pos):
+            # move to target and eat it
+            self.x = shrimp_pos[0]
+            self.y = shrimp_pos[1]
+            self.eat_shrimp(my_map, shrimp_pos)
+            self.time_2_death += 1  # live longer
+        else:
+            self.move_to_target(shrimp_pos)
+
+    # Interaction  eat a shrimp
+    def eat_shrimp(self, my_map, shrimp_pos):
+        print(f"{self} is eating shrimp @ {shrimp_pos}")
+        my_map.remove_shrimps(shrimp_pos)
 
 
 class Shrimp(Creature):
@@ -303,7 +307,8 @@ class Shrimp(Creature):
             # before moving, check if there are some Duck around * points (it depends on vision)
             predictor_pos = self.search_nearst_target(my_map.get_ducks_pos() + my_map.get_newts_pos())
             if predictor_pos:
-                print(f"Predictor Duck/Newt was found! @ ({predictor_pos}) by {self}. (distance={manhattan_distance([self.x,self.y],predictor_pos)})")
+                print(
+                    f"Predictor Duck/Newt was found! @ ({predictor_pos}) by {self}. (distance={manhattan_distance([self.x, self.y], predictor_pos)})")
                 self.move_away_from(predictor_pos)
             else:
                 # before moving, check if there are some foods around * points (it depends on vision)
@@ -320,3 +325,22 @@ class Shrimp(Creature):
         else:
             size = 8
         return size
+
+    # Movement
+    def track_food(self, my_map, food_pos):
+        # move forward to newts
+        print(f"Food was found! @ ({food_pos}) by {self}. (distance={manhattan_distance([self.x, self.y], food_pos)})")
+        # if the distance is under a velocity?
+        if self.under_one_step(food_pos):
+            # move to target and eat it
+            self.x = food_pos[0]
+            self.y = food_pos[1]
+            self.eat_food(my_map, food_pos)
+            self.time_2_death += 5  # live longer
+        else:
+            self.move_to_target(food_pos)
+
+    # Interaction  eat a food
+    def eat_food(self, my_map, food_pos):
+        print(f"{self} is eating food @ {food_pos}")
+        my_map.remove_foods(food_pos)
