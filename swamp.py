@@ -296,7 +296,7 @@ class Shrimp(Creature):
         if self.state == self.EGG and self.age >= self.TIME_2_HATCH:  # ready to HATCH
             self.state = self.ADULT
         if random.random() < 0.05 / math.log2(
-                len(my_map.shrimps_list) + 1):  # (0.1/log2(num+1))% chance to lay eggs for adult
+                len(my_map.shrimps_list) + 10):  # (0.05/log2(num+10))% chance to lay eggs for adult
             self.eggs = [[self.x, self.y]] * random.randint(1, 5)
         # run for ADULT
         if self.state == self.ADULT:
