@@ -30,6 +30,7 @@
 sudo apt-get install python3-pygame
 pip install python-math
 pip install numpy
+pip3 install pyyaml
 ```
 ### Start it by Running:
 ```
