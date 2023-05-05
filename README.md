@@ -1,4 +1,13 @@
 # Swamp Life Simulation
+
+# Preview
+
+Here's a preview of what the app looks like:
+
+<div style="border: 1px solid #444; padding: 10px;">
+  <img src="./assets/screenshot.png" alt="JustTweet Screenshot" />
+</div>
+
 ## Contents
 - border.py - Boundaries: Stop the beings going beyond the grid(window).
 - config.py	- Configration file initialize windows size and number of creatures.
